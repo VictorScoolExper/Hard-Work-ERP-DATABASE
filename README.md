@@ -11,5 +11,5 @@ This is a wordpress plugin with ERP and CRM functionality, this plugin can help 
 - Add the folder to the wp-content/plugins/ found the wordpress plugins.
 
 ## License
-This will have a commercial license
+Comercial License
 
