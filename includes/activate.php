@@ -7,4 +7,6 @@ function hw_erp_activate_plugin() {
         __('You must updated WordPress to use this plugin', 'udemy-plus')
       );
     }
+
+    
 }
