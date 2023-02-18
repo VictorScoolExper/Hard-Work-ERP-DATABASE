@@ -1,10 +1,10 @@
 -- CRM TABLES, shoudl handle Customer, vendors, etc
 CREATE TABLE hw_erp_clients (
   client_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  first_name VARCHAR(255) NOT NULL,
-  last_name VARCHAR(255) NOT NULL,
+  first_name VARCHAR(100) NOT NULL,
+  last_name VARCHAR(100) NOT NULL,
   email VARCHAR(255) NOT NULL,
-  cell_number VARCHAR(255) NOT NULL,
+  cell_number VARCHAR(11) NOT NULL,
   life_stage ENUM('Customer', 'Lead', 'Opportunity') NOT NULL DEFAULT 'Customer',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -25,11 +25,11 @@ CREATE TABLE hw_erp_client_addresses (
 
 CREATE TABLE hw_erp_vendor(
   vendor_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(200) NOT NULL,
-  last_name VARCHAR(200),
+  name VARCHAR(100) NOT NULL,
+  last_name VARCHAR(100),
   company BIGINT NOT NULL,
-  cell_number VARCHAR(200) NOT NULL,
-  email VARCHAR(200) NOT NULL,
+  cell_number VARCHAR(11) NOT NULL,
+  email VARCHAR(255) NOT NULL,
   street VARCHAR(255),
   city VARCHAR(255),
   state VARCHAR(255),
@@ -229,7 +229,6 @@ Create TABLE hw_erp_vehicle_crew(
 
 CREATE TABLE hw_erp_invoices (
     invoice_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    client_id BIGINT NOT NULL,
     sent_date DATE NOT NULL,
     due_date DATE NOT NULL,
     subtotal DECIMAL(10,2) NOT NULL,
@@ -283,8 +282,6 @@ CREATE TABLE hw_erp_task_estimate (
   FOREIGN KEY (service_id) REFERENCES hw_erp_services(service_id)
 );
 
-
-
 CREATE TABLE hw_erp_expenses (
   expense_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   description VARCHAR(255) NOT NULL,
@@ -326,6 +323,49 @@ CREATE TABLE hw_erp_equipment_expenses (
   FOREIGN KEY (invoice_id) REFERENCES hw_erp_invoices(invoice_id)
 );
 
-
 -- Need to add projects tables
+CREATE TABLE hw_erp_projects(
+  project_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  client_id BIGINT NOT NULL,
+  invoice_id BIGINT NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  description TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (client_id) REFERENCES hw_erp_clients(client_id),
+  FOREIGN KEY (invoice_id) REFERENCES hw_erp_invoices(invoice_id)
+);
+
+CREATE TABLE hw_erp_project_tasks(
+  project_task_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  project_id BIGINT NOT NULL,
+  service_id BIGINT NOT NULL,
+  hours_approx INT NOT NULL,
+  total DECIMAL(10,2) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (project_id) REFERENCES hw_erp_projects(project_id),
+  FOREIGN KEY (service_id) REFERENCES hw_erp_services(service_id)
+);
+
+CREATE TABLE hw_erp_crew_projects(
+    crew_job_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    crew_id BIGINT NOT NULL,
+    address_id BIGINT NOT NULL,
+    client_id BIGINT NOT NULL,
+    project_id BIGINT NOT NULL,
+    short_description TEXT NOT NULL,
+    description TEXT NOT NULL,
+    status ENUM('TO DO', 'IN PROGRESS', 'DONE' 'Canceled') NOT NULL DEFAULT 'TO DO',
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (crew_id) REFERENCES hw_erp_crews(crew_id),
+    FOREIGN KEY (address_id) REFERENCES hw_erp_client_addresses(address_id),
+    FOREIGN KEY (client_id) REFERENCES hw_erp_clients(client_id),
+    FOREIGN KEY (project_id) REFERENCES hw_erp_projects(project_id)
+);
+
+
 
