@@ -8,5 +8,4 @@ function hw_erp_activate_plugin() {
     );
   }
 
-  
 }
