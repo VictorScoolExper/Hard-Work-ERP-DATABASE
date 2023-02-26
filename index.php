@@ -37,8 +37,10 @@ function my_plugin_scripts() {
 }
 
 // Hooks
-register_activation_hook(__FILE__, 'hw_erp_activate_plugin');
+
 add_action( 'admin_enqueue_scripts', 'my_plugin_scripts' );
 add_action('admin_menu', 'hw_erp_admin_menus');
-add_action('init', 'hw_erp_example_post_type');
-add_action('cuisine_add_form_fields', 'hw_erp_cusine_add_form_fields');
+
+
+
+

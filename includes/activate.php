@@ -8,6 +8,5 @@ function hw_erp_activate_plugin() {
     );
   }
 
-  hw_erp_example_post_type();
-  flush_rewrite_rules();
+  
 }
