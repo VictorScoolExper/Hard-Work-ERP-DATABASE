@@ -1,0 +1,43 @@
+{
+  "name": "work-hard-erp-plugin",
+  "version": "1.0.0",
+  "description": "This is a wordpress plugin with ERP and CRM functionality, this plugin can help anyone with:\r - Landscaping Business\r - Small labor intensive business",
+  "main": "index.php",
+  "scripts": {
+    "build": "webpack --mode=production",
+    "watch": "webpack --mode=development --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VictorScoolExper/Work-Hard-ERP-Plugin.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VictorScoolExper/Work-Hard-ERP-Plugin/issues"
+  },
+  "homepage": "https://github.com/VictorScoolExper/Work-Hard-ERP-Plugin#readme",
+  "dependencies": {
+    "@babel/core": "^7.21.0",
+    "@babel/preset-env": "^7.20.2",
+    "@babel/preset-react": "^7.18.6",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@mui/material": "^5.11.11",
+    "@wordpress/components": "^23.5.0",
+    "@wordpress/data": "^8.5.0",
+    "@wordpress/element": "^5.5.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^9.1.2",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.8.2",
+    "webpack-cli": "^5.0.1"
+  },
+  "devDependencies": {
+    "webpack": "^5.75.0"
+  }
+}

@@ -36,10 +36,12 @@ function my_plugin_scripts() {
     wp_enqueue_script('bootstrap', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN', array('jquery'), '5.3.0', true);
 }
 
-// Hooks
 
+// Hooks
 add_action( 'admin_enqueue_scripts', 'my_plugin_scripts' );
 add_action('admin_menu', 'hw_erp_admin_menus');
+
+
 
 
 
