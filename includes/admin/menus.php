@@ -7,7 +7,7 @@ function hw_erp_admin_menus(){
         'Hard Work ERP',
         'manage_options',
         'hw_erp',
-        'hw_erp_dashboard_page',
+        'hw_erp_general_dash',
         'dashicons-businessman',
         3
     );
@@ -18,7 +18,7 @@ function hw_erp_admin_menus(){
         'Dashboard',
         'manage_options',
         'hw_erp',// do not change line
-        'hw_erp_dashboard_page'
+        'hw_erp_general_dash'
     );
 
     add_submenu_page(
@@ -27,7 +27,7 @@ function hw_erp_admin_menus(){
         'CRM',
         'manage_options',
         'hw_erp_crm',
-        'hw_erp_crm_page'
+        'hw_erp_crm'
     );
 
     add_submenu_page(
@@ -36,7 +36,7 @@ function hw_erp_admin_menus(){
         'Accounting',
         'manage_options',
         'hw_erp_accounting',
-        'hw_erp_accounting_page'
+        'hw_erp_accounting'
     );
 
     add_submenu_page(
@@ -45,7 +45,7 @@ function hw_erp_admin_menus(){
         'Crews',
         'manage_options',
         'hw_erp_crew_management',
-        'hw_erp_crew_page'
+        'hw_erp_crew'
     );
 
     add_submenu_page(
@@ -54,7 +54,7 @@ function hw_erp_admin_menus(){
         'Jobs',
         'manage_options',
         'hw_erp_job_management',
-        'hw_erp_job_page'
+        'hw_erp_job'
     );
 
     add_submenu_page(
@@ -63,7 +63,7 @@ function hw_erp_admin_menus(){
         'Fleet',
         'manage_options',
         'hw_erp_fleet_management',
-        'hw_erp_fleet_page'
+        'hw_erp_fleet'
     );
 
     add_submenu_page(
@@ -72,7 +72,7 @@ function hw_erp_admin_menus(){
         'Projects',
         'manage_options',
         'hw_erp_project_management',
-        'hw_erp_project_page'
+        'hw_erp_project'
     );
     
     add_submenu_page(
@@ -81,7 +81,7 @@ function hw_erp_admin_menus(){
         'Inventory',
         'manage_options',
         'hw_erp_inventory_management',
-        'hw_erp_inventory_page'
+        'hw_erp_inventory'
     );
     // Might be removed but is better to be on the server side
     add_submenu_page(
@@ -99,47 +99,3 @@ function hw_erp_dashboard_page(){
 
     wp_enqueue_script('hw_erp_general-dashboard-page', plugin_dir_url(__FILE__) . '../../dist/general_dashboard.js', array(), '1.0.0', true );
 }
-
-function hw_erp_crm_page(){
-    echo'<div id="crm-page"></div>';
-
-    wp_enqueue_script('hw_erp_crm-page', plugin_dir_url(__FILE__) . '../../dist/crm.js', array(), '1.0.0', true );
-}
-
-function hw_erp_accounting_page() {
-    echo '<div id="accounting-page"></div>';
-  
-    wp_enqueue_script('hw_erp_accounting-page', plugin_dir_url(__FILE__) . '../../dist/accounting.js', array(), '1.0.0', true);
-    //wp_enqueue_style('my-plugin', plugin_dir_url(__FILE__) . 'dist/index.css', array(), '1.0.0');
-}
-
-function hw_erp_crew_page(){
-    echo '<div id="crew-page"></div>';
-
-    wp_enqueue_script('hw_erp_crew_page', plugin_dir_url(__FILE__) . '../../dist/crew.js', array(), '1.0.0', true);
-}
-
-function hw_erp_job_page(){
-    echo '<div id="job-page"></div>';
-
-    wp_enqueue_script('hw_erp_job_page', plugin_dir_url(__FILE__) . '../../dist/job.js', array(), '1.0.0', true);
-}
-
-function hw_erp_fleet_page(){
-    echo '<div id="fleet-page"></div>';
-
-    wp_enqueue_script('hw_erp_fleet_page', plugin_dir_url(__FILE__) . '../../dist/fleet.js', array(), '1.0.0', true);
-}
-
-function hw_erp_project_page(){
-    echo '<div id="project-page"></div>';
-
-    wp_enqueue_script('hw_erp_project_page', plugin_dir_url(__FILE__) . '../../dist/project.js', array(), '1.0.0', true);
-}
-
-function hw_erp_inventory_page(){
-    echo '<div id="inventory-page"></div>';
-
-    wp_enqueue_script('hw_erp_inventory_page', plugin_dir_url(__FILE__) . '../../dist/inventory.js', array(), '1.0.0', true);
-}
-

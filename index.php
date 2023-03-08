@@ -25,20 +25,23 @@ define('HW_ERP_PLUGIN_FILE', __FILE__);
 // Includes
 $rootFiles = glob(HW_ERP_PLUGIN_DIR . 'includes/*.php');
 $subdirectoryFiles = glob(HW_ERP_PLUGIN_DIR . 'includes/**/*.php');
-$allFiles = array_merge($rootFiles, $subdirectoryFiles);
+$moduleFiles = glob(HW_ERP_PLUGIN_DIR . 'modules/**/*.php');
+//$moduleSubdirectoryFiles = glob(HW_ERP_PLUGIN_DIR . 'modules/**')
+$allFiles = array_merge($rootFiles, $subdirectoryFiles, $moduleFiles);
 
 foreach ($allFiles as $filename) {
     include_once($filename);
 }
 
+// Do this using the regular php method by adding it in the vendor
 function my_plugin_scripts() {
     wp_enqueue_style( 'bootstrap', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css', array(), '5.3.0', 'all' );
     wp_enqueue_script('bootstrap', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN', array('jquery'), '5.3.0', true);
 }
 
-
 // Hooks
 add_action( 'admin_enqueue_scripts', 'my_plugin_scripts' );
+
 add_action('admin_menu', 'hw_erp_admin_menus');
 
 
