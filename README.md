@@ -1,4 +1,4 @@
-# Work Hard ERP Plugin
+# Work Hard ERP DATABASE
 
 ## Description
 This is a wordpress plugin with ERP and CRM functionality, this plugin can help anyone with:
