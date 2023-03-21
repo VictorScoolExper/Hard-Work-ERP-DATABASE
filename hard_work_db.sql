@@ -1,7 +1,30 @@
+CREATE DATABASE hard_work_erp_db;
+USE hard_work_erp_db;
 
-DROP TABLE IF EXISTS hw_erp_clients;
+CREATE TABLE users(
+  user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(200) NOT NULL,
+  last_name VARCHAR(200) NOT NULL,
+  cell_number VARCHAR(8),
+  age INT,
+  activo INT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE auths(
+  user_id BIGINT UNIQUE,
+  email VARCHAR(200) NOT NULL,
+  password VARCHAR(200) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES user(user_id)
+);
+
+
+DROP TABLE IF EXISTS clients;
 -- CRM TABLES, shoudl handle Customer, vendors, etc
-CREATE TABLE hw_erp_clients (
+CREATE TABLE clients (
   client_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   first_name VARCHAR(100) NOT NULL,
   last_name VARCHAR(100) NOT NULL,
@@ -12,8 +35,8 @@ CREATE TABLE hw_erp_clients (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-DROP TABLE IF EXISTS hw_erp_client_addresses;
-CREATE TABLE hw_erp_client_addresses (
+DROP TABLE IF EXISTS client_addresses;
+CREATE TABLE client_addresses (
   address_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   client_id BIGINT NOT NULL,
   street VARCHAR(255) NOT NULL,
@@ -23,11 +46,11 @@ CREATE TABLE hw_erp_client_addresses (
   country VARCHAR(255) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (client_id) REFERENCES hw_erp_clients (client_id)
+  FOREIGN KEY (client_id) REFERENCES clients (client_id)
 );
 
-DROP TABLE IF EXISTS hw_erp_vendors;
-CREATE TABLE hw_erp_vendor(
+DROP TABLE IF EXISTS vendors;
+CREATE TABLE vendors(
   vendor_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
   last_name VARCHAR(100),
@@ -43,16 +66,16 @@ CREATE TABLE hw_erp_vendor(
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-DROP TABLE IF EXISTS hw_erp_category_service;
-CREATE TABLE hw_erp_category_service(
+DROP TABLE IF EXISTS category_service;
+CREATE TABLE category_service(
   category_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-DROP TABLE IF EXISTS hw_erp_services;
-CREATE TABLE hw_erp_services (
+DROP TABLE IF EXISTS services;
+CREATE TABLE services (
   service_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
   is_per_hour TINYINT NOT NULL,
@@ -62,52 +85,43 @@ CREATE TABLE hw_erp_services (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-DROP TABLE IF EXISTS hw_erp_jobs;
-CREATE TABLE hw_erp_jobs (
+DROP TABLE IF EXISTS jobs;
+CREATE TABLE jobs (
   job_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   client_id BIGINT NOT NULL,
   address_id BIGINT NOT NULL,
   schedule_date DATE NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (client_id) REFERENCES hw_erp_clients(client_id)
+  FOREIGN KEY (client_id) REFERENCES clients(client_id)
 );
 
-DROP TABLE IF EXISTS hw_erp_job_tasks;
-CREATE TABLE hw_erp_job_tasks (
+DROP TABLE IF EXISTS job_tasks;
+CREATE TABLE job_tasks (
   job_task_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   job_id BIGINT NOT NULL,
   service_id BIGINT NOT NULL,
   hours_todo INT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (job_id) REFERENCES hw_erp_jobs(job_id),
-  FOREIGN KEY (service_id) REFERENCES hw_erp_services(service_id)
+  FOREIGN KEY (job_id) REFERENCES jobs(job_id),
+  FOREIGN KEY (service_id) REFERENCES services(service_id)
 );
 
-DROP TABLE IF EXISTS hw_erp_crews;
--- Crews can also be individual
-CREATE TABLE hw_erp_crews (
-  crew_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  crew_name VARCHAR(255) NOT NULL,
-  indivdual TINYINT(1) NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+INSERT INTO employees (
+first_name, last_name, email, 
+cell_number, job_title, department, 
+driver_license, start_date, end_date, 
+salary)
+VALUES (
+'John', 'Doe', 'johndoe@example.com', 
+'555-123-4567', 'Software Engineer', '
+Engineering', 'ABC123', '2022-01-01', 
+NULL, 
+80000.00);
 
-DROP TABLE IF EXISTS hw_erp_schedules;
-CREATE TABLE hw_erp_schedules (
-	schedule_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-	shift_begin DATETIME NOT NULL,
-	shift_end DATETIME NOT NULL,
-	crew_id BIGINT NOT NULL,
-	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (crew_id) REFERENCES hw_erp_crews(crew_id)
-);
-
-DROP TABLE IF EXISTS hw_erp_employees;
-CREATE TABLE hw_erp_employees (
+DROP TABLE IF EXISTS employees;
+CREATE TABLE employees (
     employee_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
@@ -119,16 +133,46 @@ CREATE TABLE hw_erp_employees (
     start_date DATE NOT NULL,
     end_date DATE DEFAULT NULL,
     salary DECIMAL(10, 2) NOT NULL,
-    crew_assigned BIGINT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (crew_assigned) REFERENCES hw_erp_crews(crew_id)
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-DROP TABLE IF EXISTS hw_erp_crew_jobs;
+DROP TABLE IF EXISTS crews;
+-- Crews can also be individual
+CREATE TABLE crews (
+  crew_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  crew_name VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+DROP TABLE IF EXISTS crews_employees;
+CREATE TABLE crews_employees(
+	crew_employee_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+	crew_id BIGINT NOT NULL,
+	employee_id BIGINT NOT NULL, 
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  	FOREIGN KEY (crew_id) REFERENCES crews(crew_id),
+  	FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+);
+
+
+DROP TABLE IF EXISTS schedules;
+CREATE TABLE schedules (
+	schedule_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+	shift_begin DATETIME NOT NULL,
+	shift_end DATETIME NOT NULL,
+	crew_id BIGINT NOT NULL,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  	FOREIGN KEY (crew_id) REFERENCES crews(crew_id)
+);
+
+DROP TABLE IF EXISTS crew_jobs;
 -- this table associates jobs to crews and allows a crew to have multiple jobs a day
 --  with the corresponding tasks
-CREATE TABLE hw_erp_crew_jobs(
+CREATE TABLE crew_jobs(
     crew_job_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     crew_id BIGINT NOT NULL,
     address_id BIGINT NOT NULL,
@@ -141,25 +185,25 @@ CREATE TABLE hw_erp_crew_jobs(
     end_date DATE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (crew_id) REFERENCES hw_erp_crews(crew_id),
-    FOREIGN KEY (address_id) REFERENCES hw_erp_client_addresses(address_id),
-    FOREIGN KEY (client_id) REFERENCES hw_erp_clients(client_id),
-    FOREIGN KEY (job_id) REFERENCES hw_erp_jobs(job_id)
+    FOREIGN KEY (crew_id) REFERENCES crews(crew_id),
+    FOREIGN KEY (address_id) REFERENCES client_addresses(address_id),
+    FOREIGN KEY (client_id) REFERENCES clients(client_id),
+    FOREIGN KEY (job_id) REFERENCES jobs(job_id)
 );
 
-DROP TABLE IF EXISTS hw_erp_job_reports;
-CREATE TABLE hw_erp_job_reports(
+DROP TABLE IF EXISTS job_reports;
+CREATE TABLE job_reports(
   job_report_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   crew_job_id BIGINT NOT NULL,
   comments TEXT,
   inconveniences TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (crew_job_id) REFERENCES hw_erp_crew_jobs(crew_job_id)
+  FOREIGN KEY (crew_job_id) REFERENCES crew_jobs(crew_job_id)
 );
 
-DROP TABLE IF EXISTS hw_erp_brands;
-CREATE TABLE hw_erp_brands(
+DROP TABLE IF EXISTS brands;
+CREATE TABLE brands(
     brand_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     brand_name VARCHAR(200) NOT NULL,
     brand_img VARCHAR(500), 
@@ -167,8 +211,8 @@ CREATE TABLE hw_erp_brands(
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-DROP TABLE IF EXISTS hw_erp_equipment_categories;
-CREATE TABLE hw_erp_equipment_categories(
+DROP TABLE IF EXISTS equipment_categories;
+CREATE TABLE equipment_categories(
     equipment_category_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     main_category VARCHAR(200) NOT NULL,
     sub_category VARCHAR(200),
@@ -176,8 +220,8 @@ CREATE TABLE hw_erp_equipment_categories(
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-DROP TABLE IF EXISTS hw_erp_equipment_stock;
-CREATE TABLE hw_erp_equipment_stock (
+DROP TABLE IF EXISTS equipment_stocks;
+CREATE TABLE equipment_stocks (
   equip_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   description TEXT NOT NULL,
@@ -189,13 +233,13 @@ CREATE TABLE hw_erp_equipment_stock (
   total DECIMAL(10,2),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (vendor_id) REFERENCES hw_erp_vendor(vendor_id),
-  FOREIGN KEY (brand_id) REFERENCES hw_erp_brands(brand_id),
-  FOREIGN KEY (equip_category_id) REFERENCES hw_erp_equipment_categories(equipment_category_id)
+  FOREIGN KEY (vendor_id) REFERENCES vendors(vendor_id),
+  FOREIGN KEY (brand_id) REFERENCES brands(brand_id),
+  FOREIGN KEY (equip_category_id) REFERENCES equipment_categories(equipment_category_id)
 );
 
-DROP TABLE IF EXISTS hw_erp_equipment_use_report;
-CREATE TABLE hw_erp_equipment_use_report (
+DROP TABLE IF EXISTS equipment_use_reports;
+CREATE TABLE equipment_use_reports (
     equip_report_id BIGINT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     employee_id BIGINT NOT NULL,
     equip_id BIGINT NOT NULL,
@@ -203,12 +247,12 @@ CREATE TABLE hw_erp_equipment_use_report (
     return_date TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (employee_id) REFERENCES hw_erp_employees (employee_id),
-    FOREIGN KEY (equip_id) REFERENCES hw_erp_equipment_stock (equip_id)
+    FOREIGN KEY (employee_id) REFERENCES employees (employee_id),
+    FOREIGN KEY (equip_id) REFERENCES equipment_stocks (equip_id)
 );
 
-DROP TABLE IF EXISTS hw_erp_fleet;
-CREATE TABLE hw_erp_fleet(
+DROP TABLE IF EXISTS fleet;
+CREATE TABLE fleet(
     vehicle_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     brand_id BIGINT NOT NULL,
     model VARCHAR(200) NOT NULL,
@@ -227,8 +271,8 @@ CREATE TABLE hw_erp_fleet(
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-DROP TABLE IF EXISTS hw_erp_maintenance_fleet;
-CREATE TABLE hw_erp_maintenance_fleet(
+DROP TABLE IF EXISTS maintenance_fleet;
+CREATE TABLE maintenance_fleet(
     maintenance_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     date DATE NOT NULL,
     vehicle_id BIGINT NOT NULL,
@@ -240,24 +284,24 @@ CREATE TABLE hw_erp_maintenance_fleet(
     total DECIMAL(10,2) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (vehicle_id) REFERENCES hw_erp_fleet(vehicle_id)
+    FOREIGN KEY (vehicle_id) REFERENCES fleet(vehicle_id)
 );
 
-DROP TABLE IF EXISTS hw_erp_vehicle_crew;
-Create TABLE hw_erp_vehicle_employee(
+DROP TABLE IF EXISTS vehicle_crew;
+Create TABLE vehicle_crew(
     vehicle_crew BIGINT AUTO_INCREMENT PRIMARY KEY,
     vehicle_id BIGINT NOT NULL,
     crew_id BIGINT NOT NULL,
     driver_id BIGINT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (vehicle_id) REFERENCES hw_erp_fleet(vehicle_id),
-    FOREIGN KEY (crew_id) REFERENCES hw_erp_crews(crew_id),
-    FOREIGN KEY (driver_id) REFERENCES hw_erp_employees(employee_id)
+    FOREIGN KEY (vehicle_id) REFERENCES fleet(vehicle_id),
+    FOREIGN KEY (crew_id) REFERENCES crews(crew_id),
+    FOREIGN KEY (driver_id) REFERENCES employees(employee_id)
 );
 
-DROP TABLE IF EXISTS hw_erp_invoices;
-CREATE TABLE hw_erp_invoices (
+DROP TABLE IF EXISTS invoices;
+CREATE TABLE invoices (
     invoice_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     client_id BIGINT NOT NULL,
     sent_date DATE NOT NULL,
@@ -268,25 +312,25 @@ CREATE TABLE hw_erp_invoices (
     payment_status ENUM('Paid', 'Unpaid') NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (client_id) REFERENCES hw_erp_clients(client_id)
+    FOREIGN KEY (client_id) REFERENCES clients(client_id)
 );
 
-DROP TABLE IF EXISTS hw_erp_invoice_summary;
+DROP TABLE IF EXISTS invoice_summaries;
 -- this will require a complex query when creating the total of the invoice since the invoice 
 --  can have various jobs in the invoice
-CREATE TABLE hw_erp_invoice_summary(
+CREATE TABLE invoice_summaries(
   invoice_job_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   invoice_id BIGINT NOT NULL,
   job_id BIGINT NOT NULL,
   total DECIMAL(10,2) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (invoice_id) REFERENCES hw_erp_invoices(invoice_id),
-  FOREIGN KEY (job_id) REFERENCES hw_erp_jobs(job_id)
+  FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id),
+  FOREIGN KEY (job_id) REFERENCES jobs(job_id)
 );
 
-DROP TABLE IF EXISTS hw_erp_estimates;
-CREATE TABLE hw_erp_estimates (
+DROP TABLE IF EXISTS estimates;
+CREATE TABLE estimates (
   estimate_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   client_id BIGINT NOT NULL,
   estimate_tasks BIGINT NOT NULL,
@@ -299,11 +343,11 @@ CREATE TABLE hw_erp_estimates (
   notes TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (client_id) REFERENCES hw_erp_clients(client_id)
+  FOREIGN KEY (client_id) REFERENCES clients(client_id)
 );
 
-DROP TABLE IF EXISTS hw_erp_task_estimate;
-CREATE TABLE hw_erp_task_estimate (
+DROP TABLE IF EXISTS task_estimates;
+CREATE TABLE task_estimates (
   task_est_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   estimate_id BIGINT NOT NULL,
   service_id BIGINT NOT NULL,
@@ -311,12 +355,12 @@ CREATE TABLE hw_erp_task_estimate (
   total DECIMAL(10,2) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (estimate_id) REFERENCES hw_erp_estimates(estimate_id),
-  FOREIGN KEY (service_id) REFERENCES hw_erp_services(service_id)
+  FOREIGN KEY (estimate_id) REFERENCES estimates(estimate_id),
+  FOREIGN KEY (service_id) REFERENCES services(service_id)
 );
 
-DROP TABLE IF EXISTS hw_erp_expenses;
-CREATE TABLE hw_erp_expenses (
+DROP TABLE IF EXISTS expenses;
+CREATE TABLE expenses (
   expense_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   description VARCHAR(255) NOT NULL,
   subtotal DECIMAL(10,2) NOT NULL,
@@ -327,18 +371,18 @@ CREATE TABLE hw_erp_expenses (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-DROP TABLE IF EXISTS hw_erp_expense_reciepts;
-CREATE TABLE hw_erp_expense_reciepts(
+DROP TABLE IF EXISTS expense_reciepts;
+CREATE TABLE expense_reciepts(
   exp_reciept_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   expense_id BIGINT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (expense_id) REFERENCES hw_erp_expenses(expense_id)
+  FOREIGN KEY (expense_id) REFERENCES expenses(expense_id)
 );
 
-DROP TABLE IF EXISTS hw_erp_expense_items;
+DROP TABLE IF EXISTS expense_items;
 -- this table can be used to reference items for easier future purchase
-CREATE TABLE hw_erp_expense_items(
+CREATE TABLE expense_items(
   item_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   expense_id BIGINT NOT NULL,
   name VARCHAR(100) NOT NULL,
@@ -346,23 +390,23 @@ CREATE TABLE hw_erp_expense_items(
   total DECIMAL(10,2) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (expense_id) REFERENCES hw_erp_expenses(expense_id)
+  FOREIGN KEY (expense_id) REFERENCES expenses(expense_id)
 );
 
-DROP TABLE IF EXISTS hw_erp_equipment_expenses;
-CREATE TABLE hw_erp_equipment_expenses (
+DROP TABLE IF EXISTS equipment_expenses;
+CREATE TABLE equipment_expenses (
   equip_expense_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   equip_id BIGINT NOT NULL,
   invoice_id BIGINT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (equip_id) REFERENCES hw_erp_equipment_stock(equip_id),
-  FOREIGN KEY (invoice_id) REFERENCES hw_erp_invoices(invoice_id)
+  FOREIGN KEY (equip_id) REFERENCES equipment_stocks(equip_id),
+  FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id)
 );
 
-DROP TABLE IF EXISTS hw_erp_projects;
+DROP TABLE IF EXISTS projects;
 -- Need to add projects tables
-CREATE TABLE hw_erp_projects(
+CREATE TABLE projects(
   project_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   client_id BIGINT NOT NULL,
   invoice_id BIGINT NOT NULL,
@@ -370,12 +414,12 @@ CREATE TABLE hw_erp_projects(
   description TEXT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (client_id) REFERENCES hw_erp_clients(client_id),
-  FOREIGN KEY (invoice_id) REFERENCES hw_erp_invoices(invoice_id)
+  FOREIGN KEY (client_id) REFERENCES clients(client_id),
+  FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id)
 );
 
-DROP TABLE IF EXISTS hw_erp_project_tasks;
-CREATE TABLE hw_erp_project_tasks(
+DROP TABLE IF EXISTS project_tasks;
+CREATE TABLE project_tasks(
   project_task_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   project_id BIGINT NOT NULL,
   service_id BIGINT NOT NULL,
@@ -383,12 +427,12 @@ CREATE TABLE hw_erp_project_tasks(
   total DECIMAL(10,2) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (project_id) REFERENCES hw_erp_projects(project_id),
-  FOREIGN KEY (service_id) REFERENCES hw_erp_services(service_id)
+  FOREIGN KEY (project_id) REFERENCES projects(project_id),
+  FOREIGN KEY (service_id) REFERENCES services(service_id)
 );
 
-DROP TABLE IF EXISTS hw_erp_crew_projects;
-CREATE TABLE hw_erp_crew_projects(
+DROP TABLE IF EXISTS crew_projects;
+CREATE TABLE crew_projects(
     crew_job_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     crew_id BIGINT NOT NULL,
     address_id BIGINT NOT NULL,
@@ -401,11 +445,9 @@ CREATE TABLE hw_erp_crew_projects(
     end_date DATE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (crew_id) REFERENCES hw_erp_crews(crew_id),
-    FOREIGN KEY (address_id) REFERENCES hw_erp_client_addresses(address_id),
-    FOREIGN KEY (client_id) REFERENCES hw_erp_clients(client_id),
-    FOREIGN KEY (project_id) REFERENCES hw_erp_projects(project_id)
+    FOREIGN KEY (crew_id) REFERENCES crews(crew_id),
+    FOREIGN KEY (address_id) REFERENCES client_addresses(address_id),
+    FOREIGN KEY (client_id) REFERENCES clients(client_id),
+    FOREIGN KEY (project_id) REFERENCES projects(project_id)
 );
-
-
 
