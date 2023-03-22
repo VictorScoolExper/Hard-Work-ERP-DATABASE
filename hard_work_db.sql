@@ -6,8 +6,9 @@ CREATE TABLE users(
   name VARCHAR(200) NOT NULL,
   last_name VARCHAR(200) NOT NULL,
   cell_number VARCHAR(8),
+  role VARCHAR(20),
   age INT,
-  activo INT,
+  active INT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -108,18 +109,6 @@ CREATE TABLE job_tasks (
   FOREIGN KEY (service_id) REFERENCES services(service_id)
 );
 
-INSERT INTO employees (
-first_name, last_name, email, 
-cell_number, job_title, department, 
-driver_license, start_date, end_date, 
-salary)
-VALUES (
-'John', 'Doe', 'johndoe@example.com', 
-'555-123-4567', 'Software Engineer', '
-Engineering', 'ABC123', '2022-01-01', 
-NULL, 
-80000.00);
-
 DROP TABLE IF EXISTS employees;
 CREATE TABLE employees (
     employee_id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -136,6 +125,15 @@ CREATE TABLE employees (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+CREATE TABLE user_employee(
+  user_id BIGINT UNIQUE,
+  employee_id BIGINT UNIQUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(user_id),
+  FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+)
 
 DROP TABLE IF EXISTS crews;
 -- Crews can also be individual
