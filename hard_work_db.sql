@@ -112,16 +112,12 @@ CREATE TABLE job_tasks (
 DROP TABLE IF EXISTS employees;
 CREATE TABLE employees (
     employee_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    first_name VARCHAR(50) NOT NULL,
-    last_name VARCHAR(50) NOT NULL,
-    email VARCHAR(100) UNIQUE,
-    cell_number VARCHAR(100) UNIQUE,
     job_title VARCHAR(100) NOT NULL,
     department VARCHAR(100) NOT NULL,
     driver_license VARCHAR(250) NOT NULL,
     start_date DATE NOT NULL,
     end_date DATE DEFAULT NULL,
-    salary DECIMAL(10, 2) NOT NULL,
+    wage_per_hour DECIMAL(10, 2) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

@@ -57,3 +57,40 @@ END
 
 CALL sp_check_auth_empty('my_table', @is_empty);
 SELECT @is_empty AS is_empty;
+
+CREATE PROCEDURE sp_get_user_auth(IN email_in VARCHAR(200))
+BEGIN
+  SELECT users.user_id, auths.password, users.name, users.last_name, users.role 
+  FROM users 
+  JOIN auths ON users.user_id = auths.user_id 
+  WHERE auths.email = email_in;
+END 
+
+CALL sp_get_user_auth('example@example.com');
+
+-- Create Employee
+CREATE PROCEDURE sp_create_employee(
+  IN p_job_title VARCHAR(100),
+  IN p_department VARCHAR(100),
+  IN p_driver_license VARCHAR(250),
+  IN p_start_date DATE,
+  IN p_wage_per_hour DECIMAL(10, 2)
+)
+BEGIN
+  INSERT INTO employees (
+    job_title,
+    department,
+    driver_license,
+    start_date,
+    wage_per_hour
+  ) VALUES (
+    p_job_title,
+    p_department,
+    p_driver_license,
+    p_start_date,
+    p_wage_per_hour
+  );
+END 
+
+CALL sp_create_employee('gardener', 'Maintance', 'asdjqw4645', '2023-03-22', 27.50);
+
