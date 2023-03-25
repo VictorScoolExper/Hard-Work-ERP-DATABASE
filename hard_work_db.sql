@@ -8,7 +8,7 @@ CREATE TABLE users(
   cell_number VARCHAR(20),
   role VARCHAR(20),
   age INT,
-  active ENUM('true', 'false') DEFAULT true,
+  active ENUM("true", "false"),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -113,7 +113,8 @@ DROP TABLE IF EXISTS employees;
 CREATE TABLE employees (
     employee_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT UNIQUE NOT NULL,
-    created_by_user BIGINT NOT NULL,
+    created_by BIGINT NOT NULL,
+    edited_by BIGINT NOT NULL,
     job_title VARCHAR(100) NOT NULL,
     department VARCHAR(100) NOT NULL,
     driver_license VARCHAR(250) NOT NULL,
@@ -123,7 +124,8 @@ CREATE TABLE employees (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (created_by_user) REFERENCES users(user_id)
+    FOREIGN KEY (created_by) REFERENCES users(user_id),
+    FOREIGN KEY (edited_by) REFERENCES users(user_id),
 );
 
 DROP TABLE IF EXISTS crews;

@@ -9,8 +9,10 @@ CREATE TABLE users(
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
 CREATE TABLE employees (
     employee_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT UNIQUE NOT NULL,
     created_by_user BIGINT NOT NULL,
     job_title VARCHAR(100) NOT NULL,
     department VARCHAR(100) NOT NULL,
@@ -20,13 +22,6 @@ CREATE TABLE employees (
     wage_per_hour DECIMAL(10, 2) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (created_by) REFERENCES users(user_id)
-);
-CREATE TABLE user_employee(
-  user_id BIGINT UNIQUE,
-  employee_id BIGINT UNIQUE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(user_id),
-  FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (created_by_user) REFERENCES users(user_id)
 );
