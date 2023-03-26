@@ -128,28 +128,25 @@ CREATE TABLE employees (
     FOREIGN KEY (edited_by) REFERENCES users(user_id),
 );
 
-DROP TABLE IF EXISTS crews;
 -- Crews can also be individual
 CREATE TABLE crews (
   crew_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   crew_name VARCHAR(255) NOT NULL,
+  crew_leader BIGINT DEFAULT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (crew_leader) REFERENCES employees(employee_id)
 );
 
-DROP TABLE IF EXISTS crews_employees;
 CREATE TABLE crews_employees(
-	crew_employee_id BIGINT AUTO_INCREMENT PRIMARY KEY,
 	crew_id BIGINT NOT NULL,
 	employee_id BIGINT NOT NULL, 
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  	FOREIGN KEY (crew_id) REFERENCES crews(crew_id),
-  	FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	FOREIGN KEY (crew_id) REFERENCES crews(crew_id),
+	FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
 );
 
-
-DROP TABLE IF EXISTS schedules;
 CREATE TABLE schedules (
 	schedule_id BIGINT AUTO_INCREMENT PRIMARY KEY,
 	shift_begin DATETIME NOT NULL,
