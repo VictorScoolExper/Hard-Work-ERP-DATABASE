@@ -147,15 +147,28 @@ CREATE TABLE crews_employees(
 	FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
 );
 
-CREATE TABLE schedules (
-	schedule_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-	shift_begin DATETIME NOT NULL,
-	shift_end DATETIME NOT NULL,
-	crew_id BIGINT NOT NULL,
-	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  	FOREIGN KEY (crew_id) REFERENCES crews(crew_id)
+CREATE TABLE attendences (
+  attendance_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  employee_id BIGINT NOT NULL,
+  attendance_date DATE NOT NULL,
+  status ENUM('present', 'absent') NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
 );
+
+CREATE TABLE shifts (
+	shift_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  employee_id BIGINT NOT NULL,
+  shift_date  DATE NOT NULL,
+	start_time DATETIME NOT NULL,
+	end_time DATETIME NOT NULL,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+);
+
+CREATE TABLE
 
 DROP TABLE IF EXISTS crew_jobs;
 -- this table associates jobs to crews and allows a crew to have multiple jobs a day
