@@ -147,11 +147,10 @@ CREATE TABLE crews_employees(
 	FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
 );
 
-CREATE TABLE attendences (
+CREATE TABLE attendances (
   attendance_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   employee_id BIGINT NOT NULL,
-  attendance_date DATE NOT NULL,
-  status ENUM('present', 'absent') NOT NULL,
+  status ENUM('present', 'absent'),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
@@ -161,8 +160,8 @@ CREATE TABLE shifts (
 	shift_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   employee_id BIGINT NOT NULL,
   shift_date  DATE NOT NULL,
-	start_time DATETIME NOT NULL,
-	end_time DATETIME NOT NULL,
+	start_time TIME NOT NULL,
+	end_time TIME NOT NULL,
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
