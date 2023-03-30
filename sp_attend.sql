@@ -25,4 +25,37 @@ BEGIN
   WHERE a.attendance_id = attendance_id;
 END
 
+-- get attendances of employee 
+CREATE PROCEDURE sp_get_attendances_by_date_range_and_employee(
+  IN start_date DATE,
+  IN end_date DATE,
+  IN employee_id BIGINT
+)
+BEGIN
+  SELECT a.attendance_id, e.employee_id, u.name, u.last_name, a.status, a.created_at
+  FROM attendances a
+  JOIN employees e ON e.employee_id = a.employee_id
+  JOIN users u ON u.user_id = e.user_id
+  WHERE e.employee_id = employee_id
+  AND DATE(a.created_at) BETWEEN start_date AND end_date;
+END
+
+-- Modify attendances 
+CREATE PROCEDURE sp_modify_attendance_status(
+  IN p_attendance_id BIGINT,
+  IN p_new_status ENUM('present', 'absent')
+)
+BEGIN
+  UPDATE attendances SET status = p_new_status WHERE attendance_id = p_attendance_id;
+END;
+
+-- Delete attendance entry
+CREATE PROCEDURE sp_delete_attendance(
+  IN p_attendance_id BIGINT
+)
+BEGIN
+  DELETE FROM attendances WHERE attendance_id = p_attendance_id;
+END;
+
+
 
