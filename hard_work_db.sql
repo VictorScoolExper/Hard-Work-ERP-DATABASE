@@ -22,8 +22,6 @@ CREATE TABLE auths(
   FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
-
-DROP TABLE IF EXISTS clients;
 -- CRM TABLES, shoudl handle Customer, vendors, etc
 CREATE TABLE clients (
   client_id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -31,23 +29,31 @@ CREATE TABLE clients (
   last_name VARCHAR(100) NOT NULL,
   email VARCHAR(255) NOT NULL,
   cell_number VARCHAR(11) NOT NULL,
-  life_stage ENUM('Customer', 'Lead', 'Opportunity') DEFAULT 'Customer',
+  life_stage ENUM('customer', 'lead', 'opportunity') DEFAULT 'customer',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-DROP TABLE IF EXISTS client_addresses;
-CREATE TABLE client_addresses (
+
+CREATE TABLE addresses (
   address_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  client_id BIGINT NOT NULL,
   street VARCHAR(255) NOT NULL,
   city VARCHAR(255) NOT NULL,
   state VARCHAR(255) NOT NULL,
   zip_code VARCHAR(255) NOT NULL,
   country VARCHAR(255) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE client_addresses(
+  address_id BIGINT NOT NULL UNIQUE,
+  client_id BIGINT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (client_id) REFERENCES clients (client_id)
+  FOREIGN KEY (address_id) REFERENCES addresses(address_id),
+  FOREIGN KEY (client_id) REFERENCES clients(client_id)
 );
 
 DROP TABLE IF EXISTS vendors;
@@ -65,6 +71,15 @@ CREATE TABLE vendors(
   country VARCHAR(255),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE vendor_addresses(
+  address_id BIGINT NOT NULL UNIQUE,
+  vendor_id BIGINT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (address_id) REFERENCES addresses(address_id),
+  FOREIGN KEY (vendor_id) REFERENCES vendors(vendor_id)
 );
 
 DROP TABLE IF EXISTS category_service;
