@@ -56,21 +56,23 @@ CREATE TABLE client_addresses(
   FOREIGN KEY (client_id) REFERENCES clients(client_id)
 );
 
-DROP TABLE IF EXISTS vendors;
-CREATE TABLE vendors(
-  vendor_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE companies(
+  company_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
-  last_name VARCHAR(100),
-  company BIGINT NOT NULL,
-  cell_number VARCHAR(11) NOT NULL,
-  email VARCHAR(255) NOT NULL,
-  street VARCHAR(255),
-  city VARCHAR(255),
-  state VARCHAR(255),
-  zip_code VARCHAR(255),
-  country VARCHAR(255),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE vendors(
+  vendor_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  first_name VARCHAR(100) NOT NULL,
+  last_name VARCHAR(100),
+  company_id BIGINT NOT NULL,
+  cell_number VARCHAR(11) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  FOREIGN KEY (company_id) REFERENCES companies(company_id)
 );
 
 CREATE TABLE vendor_addresses(
