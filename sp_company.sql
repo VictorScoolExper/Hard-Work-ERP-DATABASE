@@ -26,3 +26,9 @@ BEGIN
     SET name = p_name
     WHERE company_id = p_company_id;
 END
+
+-- returns if company exists in table
+CREATE PROCEDURE sp_check_company_exists(IN p_company_id BIGINT)
+BEGIN
+    SELECT EXISTS(SELECT 1 FROM companies WHERE company_id = p_company_id);
+END

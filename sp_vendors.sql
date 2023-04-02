@@ -2,8 +2,8 @@
 CREATE PROCEDURE sp_insert_vendor(
   IN p_first_name VARCHAR(100),
   IN p_last_name VARCHAR(100),
-  IN p_company BIGINT,
-  IN p_cell_number VARCHAR(11),
+  IN p_company_id BIGINT,
+  IN p_cell_number VARCHAR(20),
   IN p_email VARCHAR(255),
   IN p_addresses JSON
 )
@@ -13,8 +13,8 @@ BEGIN
   DECLARE num_addresses INT DEFAULT JSON_LENGTH(p_addresses);
  
  
-  INSERT INTO vendors(first_name, last_name, company, cell_number, email)
-  VALUES (p_first_name, p_last_name, p_company, p_cell_number, p_email);
+  INSERT INTO vendors(first_name, last_name, company_id, cell_number, email)
+  VALUES (p_first_name, p_last_name, p_company_id, p_cell_number, p_email);
   SET last_id = LAST_INSERT_ID();
 
   SET i = 0;
