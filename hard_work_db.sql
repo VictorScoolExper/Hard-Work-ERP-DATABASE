@@ -74,9 +74,9 @@ CREATE TABLE vendors(
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
   FOREIGN KEY (company_id) REFERENCES companies(company_id)
 );
-
+-- there can be many vendors in that address
 CREATE TABLE vendor_addresses(
-  address_id BIGINT NOT NULL UNIQUE,
+  address_id BIGINT NOT NULL,
   vendor_id BIGINT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
