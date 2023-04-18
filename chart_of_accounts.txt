@@ -1,0 +1,18 @@
+
+Assets:
+- Cash Account
+- Accounts Receivable
+- Prepaid Insurance
+- 
+
+
+Liabilites:
+
+Revenues/Income:
+
+Expenses:
+
+Gains:
+
+Losses:
+

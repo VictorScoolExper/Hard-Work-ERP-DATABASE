@@ -1,0 +1,144 @@
+CREATE DATABASE hard_work_erp_db;
+USE hard_work_erp_db;
+
+CREATE TABLE users(
+  user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(200) NOT NULL,
+  last_name VARCHAR(200) NOT NULL,
+  cell_number VARCHAR(20),
+  role VARCHAR(20),
+  age INT,
+  active ENUM("true", "false"),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE auths(
+  user_id BIGINT UNIQUE,
+  email VARCHAR(200) NOT NULL,
+  password VARCHAR(200) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+-- CRM TABLES, shoudl handle Customer, vendors, etc
+CREATE TABLE clients (
+  client_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  first_name VARCHAR(100) NOT NULL,
+  last_name VARCHAR(100) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  cell_number VARCHAR(11) NOT NULL,
+  life_stage ENUM('customer', 'lead', 'opportunity') DEFAULT 'customer',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE addresses (
+  address_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  street VARCHAR(255) NOT NULL,
+  city VARCHAR(255) NOT NULL,
+  state VARCHAR(255) NOT NULL,
+  zip_code VARCHAR(255) NOT NULL,
+  country VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE client_addresses(
+  address_id BIGINT NOT NULL UNIQUE,
+  client_id BIGINT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (address_id) REFERENCES addresses(address_id),
+  FOREIGN KEY (client_id) REFERENCES clients(client_id)
+);
+
+CREATE TABLE companies(
+  company_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE vendors(
+  vendor_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  first_name VARCHAR(100) NOT NULL,
+  last_name VARCHAR(100),
+  company_id BIGINT NOT NULL,
+  cell_number VARCHAR(11) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  FOREIGN KEY (company_id) REFERENCES companies(company_id)
+);
+-- there can be many vendors in that address
+CREATE TABLE vendor_addresses(
+  address_id BIGINT NOT NULL,
+  vendor_id BIGINT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (address_id) REFERENCES addresses(address_id),
+  FOREIGN KEY (vendor_id) REFERENCES vendors(vendor_id)
+);
+
+-- Accounting seciton
+-- Check the insert file for example of the below
+CREATE TABLE chart_of_accounts (
+  account_number INT PRIMARY KEY,
+  account_name VARCHAR(255),
+  account_type VARCHAR(255),
+  normal_balance VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE income (
+  income_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  date DATE,
+  amount DECIMAL(10, 2),
+  customer_name VARCHAR(255),
+  description VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE expense_category (
+  category_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  category_name VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE expense(
+  expense_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  date DATE,
+  amount DECIMAL(10, 2),
+  category_id BIGINT NOT NULL,
+  description VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (category_id) REFERENCES expense_category(category_id)
+)
+
+CREATE TABLE journal (
+  journal_id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  account_id INT,
+  amount DECIMAL(20, 2) NOT NULL,
+  is_credit BOOLEAN NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  FOREIGN KEY (account_id) REFERENCES account(account_id)
+);
+
+-- create relationship journal and income
+CREATE TABLE income_journal (
+  income_id BIGINT UNIQUE,
+  journal_id BIGINT UNIQUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (income_id) REFERENCES income(income_id),
+  FOREIGN KEY (journal_id) REFERENCES journal(journal_id)
+);
