@@ -84,11 +84,6 @@ CREATE TABLE vendor_addresses(
   FOREIGN KEY (vendor_id) REFERENCES vendors(vendor_id)
 );
 
--- Accounting Section
-
-
--- End of Accounting Section
-
 DROP TABLE IF EXISTS category_service;
 CREATE TABLE category_service(
   category_id BIGINT AUTO_INCREMENT PRIMARY KEY,

@@ -104,7 +104,8 @@ CREATE TABLE income (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-
+-- this can be like credit card expense, bills
+-- cash expense, etc
 CREATE TABLE expense_category (
   category_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   category_name VARCHAR(255),
@@ -121,7 +122,16 @@ CREATE TABLE expense(
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (category_id) REFERENCES expense_category(category_id)
-)
+);
+
+CREATE TABLE vendor_expenses(
+  vendor_id BIGINT NOT NULL,
+  expense_id BIGINT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (vendor_id) REFERENCES vendors(vendor_id),
+  FOREIGN KEY (expense_id) REFERENCES expenses(expense_id)
+);
 
 CREATE TABLE journal (
   journal_id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -142,3 +152,129 @@ CREATE TABLE income_journal (
   FOREIGN KEY (income_id) REFERENCES income(income_id),
   FOREIGN KEY (journal_id) REFERENCES journal(journal_id)
 );
+
+-- create relationship between journal and expense
+CREATE TABLE expense_journal (
+  expense_id BIGINT UNIQUE,
+  journal_id BIGINT UNIQUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (expense_id) REFERENCES expense(expense_id),
+  FOREIGN KEY (journal_id) REFERENCES journal(journal_id)
+);
+
+CREATE TABLE services (
+  service_id INT AUTO_INCREMENT PRIMARY KEY,
+  service_name VARCHAR(255) NOT NULL,
+  service_description TEXT NOT NULL,
+  per_hour TINYINT NOT NULL,
+  service_fee DECIMAL(10, 2) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE invoices (
+  invoice_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  client_id BIGINT NOT NULL,
+  invoice_date DATE NOT NULL,
+  due_date DATE NOT NULL,
+  sale_tax DECIMAL(10,2) NOT NULL,
+  total_amount DECIMAL(10, 2) NOT NULL,
+  status ENUM('PENDING', 'PAID', 'CANCELLED') NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (client_id) REFERENCES clients(client_id)
+);
+
+CREATE TABLE invoice_service_details(
+  invoice_id BIGINT NOT NULL,
+  service_id BIGINT NOT NULL,
+  total_hours INT NOT NULL,
+  subtotal DECIMAL(10,2),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id),
+  FOREIGN KEY (service_id) REFERENCES services(service_id)
+);
+
+CREATE TABLE invoice_expense_details(
+  invoice_id BIGINT NOT NULL,
+  expense_id BIGINT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id),
+  FOREIGN KEY (service_id) REFERENCES services(service_id)
+);
+
+CREATE TABLE estimates (
+  estimate_id INT AUTO_INCREMENT PRIMARY KEY,
+  client_id INT NOT NULL,
+  estimate_date DATE NOT NULL,
+  expiry_date DATE NOT NULL,
+  total_amount DECIMAL(10, 2) NOT NULL,
+  status ENUM('PENDING', 'ACCEPTED', 'DECLINED', 'EXPIRED') NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (client_id) REFERENCES clients(client_id)
+);
+
+CREATE TABLE service_estimate_details(
+  estimate_id BIGINT NOT NULL,
+  service_id BIGINT NOT NULL,
+  total_hours INT NOT NULL,
+  subtotal DECIMAL(10,2) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (estimate_id) REFERENCES estimates(estimate_id),
+  FOREIGN KEY (service_id) REFERENCES services(service_id)
+);
+
+CREATE TABLE expense_estimate_details(
+  estimate_id BIGINT NOT NULL,
+  expense_id BIGINT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (estimate_id) REFERENCES estimates(estimate_id),
+  FOREIGN KEY (expense_id) REFERENCES expense(expense_id)
+);
+
+-- payroll
+CREATE TABLE payroll (
+  payroll_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  employee_id INT NOT NULL,
+  salary DECIMAL(10, 2) NOT NULL,
+  pay_period_start DATE NOT NULL,
+  pay_period_end DATE NOT NULL,
+  deductions DECIMAL(10, 2) DEFAULT 0,
+  bonuses DECIMAL(10, 2) DEFAULT 0,
+  net_pay DECIMAL(10, 2) NOT NULL,
+  payment_date DATE NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+);
+
+CREATE TABLE timesheet (
+  timesheet_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  employee_id BIGINT NOT NULL,
+  date DATE NOT NULL,
+  hours_total INT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE payroll_detail (
+  payroll_id BIGINT NOT NULL,
+  timesheet_id BIGINT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+
+
+
+
+
+
+
