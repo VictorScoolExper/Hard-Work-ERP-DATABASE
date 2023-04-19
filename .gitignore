@@ -1,2 +1,4 @@
-# dependencies
-node_modules
+# ignore db version
+hard_work_db_v_01.sql
+hard_work_db_v_02.sql
+
