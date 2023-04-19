@@ -1,2 +1,8 @@
-# dependencies
-node_modules
+# ignore storage procedure
+storage_procedure
+# ignore version 1
+hard_work_db_v_01.sql
+
+
+
+
