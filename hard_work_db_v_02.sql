@@ -63,10 +63,12 @@ CREATE TABLE companies(
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+-- the retail lets us know if it is a big retail
 CREATE TABLE vendors(
   vendor_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   first_name VARCHAR(100) NOT NULL,
   last_name VARCHAR(100),
+  retail TINYINT NOT NULL,
   company_id BIGINT NOT NULL,
   cell_number VARCHAR(11) NOT NULL,
   email VARCHAR(255) NOT NULL,
@@ -104,6 +106,7 @@ CREATE TABLE income (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
 -- this can be like credit card expense, bills
 -- cash expense, etc
 CREATE TABLE expense_category (
@@ -113,7 +116,7 @@ CREATE TABLE expense_category (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE TABLE expense(
+CREATE TABLE expenses(
   expense_id BIGINT PRIMARY KEY AUTO_INCREMENT,
   date DATE,
   amount DECIMAL(10, 2),
@@ -122,15 +125,6 @@ CREATE TABLE expense(
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (category_id) REFERENCES expense_category(category_id)
-);
-
-CREATE TABLE vendor_expenses(
-  vendor_id BIGINT NOT NULL,
-  expense_id BIGINT NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (vendor_id) REFERENCES vendors(vendor_id),
-  FOREIGN KEY (expense_id) REFERENCES expenses(expense_id)
 );
 
 CREATE TABLE journal (
@@ -159,7 +153,7 @@ CREATE TABLE expense_journal (
   journal_id BIGINT UNIQUE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (expense_id) REFERENCES expense(expense_id),
+  FOREIGN KEY (expense_id) REFERENCES expenses(expense_id),
   FOREIGN KEY (journal_id) REFERENCES journal(journal_id)
 );
 
@@ -235,7 +229,7 @@ CREATE TABLE expense_estimate_details(
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (estimate_id) REFERENCES estimates(estimate_id),
-  FOREIGN KEY (expense_id) REFERENCES expense(expense_id)
+  FOREIGN KEY (expense_id) REFERENCES expenses(expense_id)
 );
 
 -- payroll
@@ -260,14 +254,86 @@ CREATE TABLE timesheet (
   date DATE NOT NULL,
   hours_total INT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+);
+
+CREATE TABLE vehicle_type(
+  type_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  make VARCHAR(255) NOT NULL,
+  model VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE TABLE payroll_detail (
-  payroll_id BIGINT NOT NULL,
-  timesheet_id BIGINT NOT NULL,
+CREATE TABLE fleet(
+  fleet_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  vehicle_type_id BIGINT NOT NULL,
+  year INT NOT NULL,
+  registration_number VARCHAR(255) UNIQUE NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE fleet_expense (
+  fleet_id BIGINT NOT NULL,
+  expense_id BIGINT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  FOREIGN KEY (fleet_id) REFERENCES fleet(fleet_id),
+  FOREIGN KEY (expense_id) REFERENCES expenses(expense_id)
+);
+
+CREATE TABLE mileage (
+  mileage_id INT AUTO_INCREMENT PRIMARY KEY,
+  fleet_id INT NOT NULL,
+  start_date DATE NOT NULL,
+  end_date DATE NOT NULL,
+  start_miles DECIMAL(10, 2) NOT NULL,
+  end_miles DECIMAL(10, 2) NOT NULL,
+  total_miles DECIMAL(10, 2) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (fleet_id) REFERENCES fleet(fleet_id)
+);
+
+-- we can save all brands here
+CREATE TABLE brands (
+  brand_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  brand_name VARCHAR(255) UNIQUE NOT NULL,
+  country_of_origin VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- this should be used to represent supplies and equipment
+CREATE TABLE products (
+  product_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  description TEXT NOT NULL,
+  brand_id BIGINT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (brand_id) REFERENCES brands(brand_id)
+);
+
+-- helps to register inventory/supplies expense with the help of the expense category
+CREATE TABLE product_expense (
+  product_id BIGINT NOT NULL,
+  expense_id BIGINT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (product_id) REFERENCES products(product_id),
+  FOREIGN KEY (expense_id) REFERENCES expenses(expense_id)
+)
+
+CREATE TABLE inventory (
+  inventory_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  product_id BIGINT NOT NULL,
+  qty INT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
 
 
