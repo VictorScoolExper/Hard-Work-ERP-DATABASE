@@ -27,10 +27,10 @@ BEGIN
     VALUES (p_user_id, p_created_by_user, p_created_by_user, p_job_title, p_department, p_driver_license, p_start_date, p_wage_per_hour);
 END
 
--- Get all Employees active or inactive
+-- Get all Employees
 CREATE PROCEDURE sp_get_employee_list()
 BEGIN
-    SELECT u.name, u.last_name, u.cell_number, u.role, u.age, u.active, e.job_title, e.department, e.driver_license, e.start_date, e.end_date, e.wage_per_hour
+    SELECT u.name, u.last_name, u.cell_number, u.role, u.age, u.active, e.employee_id, e.user_id, e.job_title, e.department, e.driver_license, e.start_date, e.end_date, e.wage_per_hour
     FROM users u
     INNER JOIN employees e
     ON u.user_id = e.user_id;
