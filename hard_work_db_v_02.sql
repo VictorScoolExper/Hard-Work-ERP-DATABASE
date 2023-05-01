@@ -30,6 +30,7 @@ CREATE TABLE clients (
   email VARCHAR(255) NOT NULL,
   cell_number VARCHAR(11) NOT NULL,
   life_stage ENUM('customer', 'lead', 'opportunity') DEFAULT 'customer',
+  image VARCHAR(255),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
