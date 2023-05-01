@@ -5,6 +5,7 @@ CREATE PROCEDURE sp_insert_employee(
     IN p_cell_number VARCHAR(20),
     IN p_role VARCHAR(20),
     IN p_age INT,
+    IN p_image VARCHAR(255),
     IN p_job_title VARCHAR(100),
     IN p_department VARCHAR(100),
     IN p_driver_license VARCHAR(250),
@@ -23,8 +24,8 @@ BEGIN
     SET p_user_id = LAST_INSERT_ID();
 
     -- Insert employee record
-    INSERT INTO employees (user_id, created_by, edited_by, job_title, department, driver_license, start_date, wage_per_hour)
-    VALUES (p_user_id, p_created_by_user, p_created_by_user, p_job_title, p_department, p_driver_license, p_start_date, p_wage_per_hour);
+    INSERT INTO employees (user_id, image,created_by, edited_by, job_title, department, driver_license, start_date, wage_per_hour)
+    VALUES (p_user_id, p_image, p_created_by_user, p_created_by_user, p_job_title, p_department, p_driver_license, p_start_date, p_wage_per_hour);
 END
 
 -- Get all Employees
