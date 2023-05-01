@@ -1,4 +1,4 @@
--- Create Employee
+-- Create Employee 
 CREATE PROCEDURE sp_insert_employee(
     IN p_name VARCHAR(200),
     IN p_last_name VARCHAR(200),
