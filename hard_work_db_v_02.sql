@@ -22,6 +22,55 @@ CREATE TABLE auths(
   FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
+CREATE TABLE employees (
+    employee_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT UNIQUE NOT NULL,
+    image VARCHAR(255),
+    created_by BIGINT NOT NULL,
+    edited_by BIGINT NOT NULL,
+    job_title VARCHAR(100) NOT NULL,
+    department VARCHAR(100) NOT NULL,
+    driver_license VARCHAR(250) NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE DEFAULT NULL,
+    wage_per_hour DECIMAL(10, 2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (created_by) REFERENCES users(user_id),
+    FOREIGN KEY (edited_by) REFERENCES users(user_id),
+);
+
+CREATE TABLE crews_employees(
+	crew_id BIGINT NOT NULL,
+	employee_id BIGINT NOT NULL, 
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	FOREIGN KEY (crew_id) REFERENCES crews(crew_id),
+	FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+);
+
+
+CREATE TABLE shifts (
+	shift_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  	employee_id BIGINT NOT NULL,
+    shift_date  DATE NOT NULL,
+	start_time TIME NOT NULL,
+	end_time TIME NOT NULL,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  	FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+);
+
+CREATE TABLE attendances (
+  attendance_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  employee_id BIGINT NOT NULL,
+  status ENUM('present', 'absent'),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+);
+
 -- CRM TABLES, shoudl handle Customer, vendors, etc
 CREATE TABLE clients (
   client_id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -30,11 +79,9 @@ CREATE TABLE clients (
   email VARCHAR(255) NOT NULL,
   cell_number VARCHAR(11) NOT NULL,
   life_stage ENUM('customer', 'lead', 'opportunity') DEFAULT 'customer',
-  image VARCHAR(255),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-
 
 CREATE TABLE addresses (
   address_id BIGINT AUTO_INCREMENT PRIMARY KEY,
