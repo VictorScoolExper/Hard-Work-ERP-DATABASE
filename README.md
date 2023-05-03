@@ -1,4 +1,5 @@
 # Hard Work ERP DATABASE
+Checkout the branches to view alternative version
 
 ## Description
 This is a Database with ERP and CRM functionality, this db can help anyone with:
