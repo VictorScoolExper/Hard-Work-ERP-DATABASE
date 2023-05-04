@@ -1,2 +1,15 @@
 # dependencies
 node_modules
+
+accounting_insert_statement.sql
+hard_work_db_v_01.sql
+hard_work_db_v_02.sql
+sp_attend.sql
+sp_client.sql
+sp_company.sql
+sp_crews.sql
+sp_employees.sql
+sp_shift.sql
+sp_users.sql
+sp_vendors.sql
+
