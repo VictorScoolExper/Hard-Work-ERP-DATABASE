@@ -47,6 +47,7 @@ CREATE PROCEDURE sp_get_employee_by_id(
     OUT p_role VARCHAR(20),
     OUT p_age INT,
     OUT p_active VARCHAR(10),
+    OUT p_image_name VARCHAR(255), 
     OUT p_job_title VARCHAR(100),
     OUT p_department VARCHAR(100),
     OUT p_driver_license VARCHAR(250),
@@ -55,9 +56,9 @@ CREATE PROCEDURE sp_get_employee_by_id(
     OUT p_wage_per_hour DECIMAL(10, 2)
 )
 BEGIN
-    SELECT u.name, u.last_name, u.cell_number, u.role, u.age, u.active, e.job_title,
+    SELECT u.name, u.last_name, u.cell_number, u.role, u.age, u.active, e.image, e.job_title,
         e.department, e.driver_license, e.start_date, e.end_date, e.wage_per_hour
-    INTO p_name, p_last_name, p_cell_number, p_role, p_age, p_active, p_job_title,
+    INTO p_name, p_last_name, p_cell_number, p_role, p_age, p_active,  p_image_name, p_job_title,
         p_department, p_driver_license, p_start_date, p_end_date, p_wage_per_hour
     FROM employees e
     JOIN users u ON e.user_id = u.user_id
