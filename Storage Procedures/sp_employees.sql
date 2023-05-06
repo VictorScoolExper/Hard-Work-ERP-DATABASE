@@ -31,7 +31,7 @@ END
 -- Get all Employees
 CREATE PROCEDURE sp_get_employee_list()
 BEGIN
-    SELECT u.name, u.last_name, u.cell_number, u.role, u.age, u.active, e.employee_id, e.user_id, e.job_title, e.department, e.driver_license, e.start_date, e.end_date, e.wage_per_hour
+    SELECT u.name, u.last_name, u.cell_number, u.role, u.age, u.active, e.employee_id, e.user_id, e.job_title, e.department, e.driver_license, e.start_date, e.end_date, e.wage_per_hour, e.image
     FROM users u
     INNER JOIN employees e
     ON u.user_id = e.user_id;
@@ -109,6 +109,20 @@ BEGIN
         updated_at = NOW()
     WHERE employee_id = p_employee_id;
 END 
+
+-- Delete Employee
+CREATE PROCEDURE sp_delete_employee_and_user(IN p_employee_id INT)
+BEGIN
+  -- Get the user_id from the employees table
+  DECLARE userId INT;
+  SELECT user_id INTO userId FROM employees WHERE employee_id = p_employee_id;
+
+  -- Delete the record from the employees table
+  DELETE FROM employees WHERE employee_id = p_employee_id;
+
+  -- Delete the corresponding record from the users table
+  DELETE FROM users WHERE user_id = userId;
+END
 
 
 
