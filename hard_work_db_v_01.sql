@@ -1,16 +1,6 @@
 CREATE DATABASE hard_work_erp_db;
 USE hard_work_erp_db;
 
-CREATE TABLE `auths` (
-  `user_id` bigint DEFAULT NULL,
-  `email` varchar(200) NOT NULL,
-  `password` varchar(200) NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  UNIQUE KEY `user_id` (`user_id`),
-  CONSTRAINT `auths_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
-);
-
 CREATE TABLE `users` (
   `user_id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL,
@@ -24,11 +14,21 @@ CREATE TABLE `users` (
   PRIMARY KEY (`user_id`)
 );
 
+CREATE TABLE `auths` (
+  `user_id` bigint DEFAULT NULL,
+  `email` varchar(200) NOT NULL,
+  `password` varchar(200) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY `user_id` (`user_id`),
+  CONSTRAINT `auths_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
+);
+
 CREATE TABLE `employees` (
   `employee_id` bigint NOT NULL AUTO_INCREMENT,
   `user_id` bigint NOT NULL,
-  `created_by` bigint NOT NULL,
-  `edited_by` bigint NOT NULL,
+  `created_by` bigint,
+  `edited_by` bigint,
   `job_title` varchar(100) NOT NULL,
   `department` varchar(100) NOT NULL,
   `driver_license` varchar(250) NOT NULL,
