@@ -4,7 +4,7 @@ CREATE PROCEDURE sp_insert_employee(
     IN p_last_name VARCHAR(200),
     IN p_cell_number VARCHAR(20),
     IN p_role VARCHAR(20),
-    IN p_age INT,
+    IN p_birth_date VARCHAR(255),
     IN p_image_name VARCHAR(255),
     IN p_job_title VARCHAR(100),
     IN p_department VARCHAR(100),
@@ -17,8 +17,8 @@ BEGIN
     DECLARE p_user_id BIGINT;
 
     -- Insert user record first
-    INSERT INTO users (name, last_name, cell_number, role, age, active)
-    VALUES (p_name, p_last_name, p_cell_number, p_role, p_age, "true");
+    INSERT INTO users (name, last_name, cell_number, role, birth_date, active)
+    VALUES (p_name, p_last_name, p_cell_number, p_role, p_birth_date, "true");
 
     -- Get the user_id of the newly created user
     SET p_user_id = LAST_INSERT_ID();
