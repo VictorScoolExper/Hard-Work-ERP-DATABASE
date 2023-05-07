@@ -31,7 +31,7 @@ END
 -- Get all Employees
 CREATE PROCEDURE sp_get_employee_list()
 BEGIN
-    SELECT u.name, u.last_name, u.cell_number, u.role, u.age, u.active, e.employee_id, e.user_id, e.job_title, e.department, e.driver_license, e.start_date, e.end_date, e.wage_per_hour, e.image
+    SELECT u.name, u.last_name, u.cell_number, u.role, u.age, u.active, e.employee_id, e.user_id, e.job_title, e.department, e.driver_license, e.start_date, e.end_date, e.wage_per_hour, e.image_name
     FROM users u
     INNER JOIN employees e
     ON u.user_id = e.user_id;
@@ -75,6 +75,7 @@ CREATE PROCEDURE sp_update_employee_details(
     IN p_role VARCHAR(20),
     IN p_age INT,
     IN p_active VARCHAR(10),
+    IN p_image_name VARCHAR(255),
     IN p_job_title VARCHAR(100),
     IN p_department VARCHAR(100),
     IN p_driver_license VARCHAR(250),
@@ -100,7 +101,8 @@ BEGIN
     
     -- Update employee record
     UPDATE employees
-    SET edited_by  = p_updated_by,
+    SET image_name = p_image_name,
+        edited_by  = p_updated_by,
     	job_title = p_job_title,
         department = p_department,
         driver_license = p_driver_license,
@@ -119,7 +121,7 @@ BEGIN
   SELECT user_id INTO userId FROM employees WHERE employee_id = p_employee_id;
 
   -- Delete the record from the employees table
-  DELETE FROM employees WHERE employee_id = p_employee_id;
+  -- DELETE FROM employees WHERE employee_id = p_employee_id;
 
   -- Delete the corresponding record from the users table
   DELETE FROM users WHERE user_id = userId;
