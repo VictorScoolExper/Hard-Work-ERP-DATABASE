@@ -24,14 +24,14 @@ CREATE PROCEDURE sp_insert_user(
   IN last_name VARCHAR(200),
   IN cell_number VARCHAR(20),
   IN role VARCHAR(20),
-  IN age INT,
+  IN birth_date DATE,
   IN email VARCHAR(200),
   IN password VARCHAR(200)
 )
 BEGIN
    -- procedure logic
-   INSERT INTO users (name, last_name, cell_number, role, age, active)
-   VALUES (name, last_name, cell_number, role, age, "true");
+   INSERT INTO users (name, last_name, cell_number, role, birth_date, active)
+   VALUES (name, last_name, cell_number, role, birth_date, "true");
 
    SET @user_id = LAST_INSERT_ID();
 
