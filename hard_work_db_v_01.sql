@@ -8,7 +8,6 @@ CREATE TABLE `users` (
   `cell_number` varchar(20) DEFAULT NULL,
   `role` varchar(20) DEFAULT NULL,
   `birth_date` date DEFAULT NULL,
-  `age` int DEFAULT NULL,
   `active` enum('true','false') DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
