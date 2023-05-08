@@ -27,8 +27,8 @@ CREATE TABLE `auths` (
 CREATE TABLE `employees` (
   `employee_id` bigint NOT NULL AUTO_INCREMENT,
   `user_id` bigint NOT NULL,
-  `created_by` bigint,
-  `edited_by` bigint,
+  `created_by` bigint DEFAULT NULL,
+  `edited_by` bigint DEFAULT NULL,
   `job_title` varchar(100) NOT NULL,
   `department` varchar(100) NOT NULL,
   `driver_license` varchar(250) NOT NULL,
@@ -40,11 +40,9 @@ CREATE TABLE `employees` (
   `image_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`employee_id`),
   UNIQUE KEY `user_id` (`user_id`),
-  -- KEY `created_by` (`created_by`),
-  -- KEY `edited_by` (`edited_by`),
-  CONSTRAINT `employees_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
-  -- CONSTRAINT `employees_ibfk_2` FOREIGN KEY (`created_by`) REFERENCES `users` (`user_id`) ON DELETE SET NULL,
-  -- CONSTRAINT `employees_ibfk_3` FOREIGN KEY (`edited_by`) REFERENCES `users` (`user_id`) ON DELETE SET NULL
+  KEY `created_by` (`created_by`),
+  KEY `edited_by` (`edited_by`),
+  CONSTRAINT `employees_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
 );
 
 CREATE TABLE `shifts` (
