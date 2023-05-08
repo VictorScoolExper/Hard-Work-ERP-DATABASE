@@ -31,7 +31,7 @@ END
 -- Get all Employees
 CREATE PROCEDURE sp_get_employee_list()
 BEGIN
-    SELECT u.name, u.last_name, u.cell_number, u.role, u.age, u.active, e.employee_id, e.user_id, e.job_title, e.department, e.driver_license, e.start_date, e.end_date, e.wage_per_hour, e.image_name
+    SELECT u.name, u.last_name, u.cell_number, u.role, u.birth_date, u.active, e.employee_id, e.user_id, e.job_title, e.department, e.driver_license, e.start_date, e.end_date, e.wage_per_hour, e.image_name
     FROM users u
     INNER JOIN employees e
     ON u.user_id = e.user_id;
@@ -39,13 +39,13 @@ END;
 
 
 -- Get employee by ID
-CREATE PROCEDURE sp_get_employee_by_id(
+CREATE PROCEDURE sp_get_employee_by_id (
     IN p_employee_id BIGINT,
     OUT p_name VARCHAR(200),
     OUT p_last_name VARCHAR(200),
     OUT p_cell_number VARCHAR(20),
     OUT p_role VARCHAR(20),
-    OUT p_age INT,
+    OUT p_birth_date DATE,
     OUT p_active VARCHAR(10),
     OUT p_image_name VARCHAR(255), 
     OUT p_job_title VARCHAR(100),
@@ -56,14 +56,14 @@ CREATE PROCEDURE sp_get_employee_by_id(
     OUT p_wage_per_hour DECIMAL(10, 2)
 )
 BEGIN
-    SELECT u.name, u.last_name, u.cell_number, u.role, u.age, u.active, e.image_name, e.job_title,
+    SELECT u.name, u.last_name, u.cell_number, u.role, u.birth_date, u.active, e.image_name, e.job_title,
         e.department, e.driver_license, e.start_date, e.end_date, e.wage_per_hour
-    INTO p_name, p_last_name, p_cell_number, p_role, p_age, p_active,  p_image_name, p_job_title,
+    INTO p_name, p_last_name, p_cell_number, p_role, p_birth_date, p_active,  p_image_name, p_job_title,
         p_department, p_driver_license, p_start_date, p_end_date, p_wage_per_hour
     FROM employees e
     JOIN users u ON e.user_id = u.user_id
     WHERE e.employee_id = p_employee_id;
-END 
+END;
 
 
 -- Edit Employee User details // update the created_by in employees
