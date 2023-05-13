@@ -38,6 +38,7 @@ CREATE TABLE `employees` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `image_name` varchar(255) DEFAULT NULL,
+  `email` varchar(255) NOT NULL,
   PRIMARY KEY (`employee_id`),
   UNIQUE KEY `user_id` (`user_id`),
   KEY `created_by` (`created_by`),
