@@ -11,7 +11,8 @@ CREATE PROCEDURE sp_insert_employee(
     IN p_driver_license VARCHAR(250),
     IN p_start_date DATE,
     IN p_wage_per_hour DECIMAL(10, 2),
-    IN p_created_by_user BIGINT
+    IN p_created_by_user BIGINT,
+    IN p_email varchar(255)
 )
 BEGIN
     DECLARE p_user_id BIGINT;
@@ -24,14 +25,14 @@ BEGIN
     SET p_user_id = LAST_INSERT_ID();
 
     -- Insert employee record
-    INSERT INTO employees (user_id, image_name,created_by, edited_by, job_title, department, driver_license, start_date, wage_per_hour)
-    VALUES (p_user_id, p_image_name, p_created_by_user, p_created_by_user, p_job_title, p_department, p_driver_license, p_start_date, p_wage_per_hour);
+    INSERT INTO employees (user_id, image_name,created_by, edited_by, job_title, department, driver_license, start_date, wage_per_hour, email)
+    VALUES (p_user_id, p_image_name, p_created_by_user, p_created_by_user, p_job_title, p_department, p_driver_license, p_start_date, p_wage_per_hour, p_email);
 END
 
 -- Get all Employees
 CREATE PROCEDURE sp_get_employee_list()
 BEGIN
-    SELECT u.name, u.last_name, u.cell_number, u.role, u.birth_date, u.active, e.employee_id, e.user_id, e.job_title, e.department, e.driver_license, e.start_date, e.end_date, e.wage_per_hour, e.image_name
+    SELECT u.name, u.last_name, u.cell_number, u.role, u.birth_date, u.active, e.employee_id, e.user_id, e.job_title, e.department, e.driver_license, e.start_date, e.wage_per_hour, e.image_name, e.email
     FROM users u
     INNER JOIN employees e
     ON u.user_id = e.user_id;
@@ -52,14 +53,14 @@ CREATE PROCEDURE sp_get_employee_by_id (
     OUT p_department VARCHAR(100),
     OUT p_driver_license VARCHAR(250),
     OUT p_start_date DATE,
-    OUT p_end_date DATE,
-    OUT p_wage_per_hour DECIMAL(10, 2)
+    OUT p_wage_per_hour DECIMAL(10, 2),
+    OUT p_email VARCHAR(255)
 )
 BEGIN
     SELECT u.name, u.last_name, u.cell_number, u.role, u.birth_date, u.active, e.image_name, e.job_title,
-        e.department, e.driver_license, e.start_date, e.end_date, e.wage_per_hour
+        e.department, e.driver_license, e.start_date, e.wage_per_hour, e.email
     INTO p_name, p_last_name, p_cell_number, p_role, p_birth_date, p_active,  p_image_name, p_job_title,
-        p_department, p_driver_license, p_start_date, p_end_date, p_wage_per_hour
+        p_department, p_driver_license, p_start_date, p_wage_per_hour, p_email
     FROM employees e
     JOIN users u ON e.user_id = u.user_id
     WHERE e.employee_id = p_employee_id;
@@ -80,9 +81,9 @@ CREATE PROCEDURE sp_update_employee_details(
     IN p_department VARCHAR(100),
     IN p_driver_license VARCHAR(250),
     IN p_start_date DATE,
-    IN p_end_date DATE,
     IN p_wage_per_hour DECIMAL(10, 2),
-    IN p_updated_by BIGINT
+    IN p_updated_by BIGINT,
+    IN p_email VARCHAR(255)
 )
 BEGIN
     
@@ -107,9 +108,9 @@ BEGIN
         department = p_department,
         driver_license = p_driver_license,
         start_date = p_start_date,
-        end_date = p_end_date,
         wage_per_hour = p_wage_per_hour,
-        updated_at = NOW()
+        updated_at = NOW(),
+        email = p_email
     WHERE employee_id = p_employee_id;
 END 
 
