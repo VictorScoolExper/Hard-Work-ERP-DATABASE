@@ -74,7 +74,7 @@ CREATE PROCEDURE sp_update_employee_details(
     IN p_last_name VARCHAR(200),
     IN p_cell_number VARCHAR(20),
     IN p_role VARCHAR(20),
-    IN p_age INT,
+    IN p_birth_date DATE,
     IN p_active VARCHAR(10),
     IN p_image_name VARCHAR(255),
     IN p_job_title VARCHAR(100),
@@ -93,7 +93,7 @@ BEGIN
         last_name = p_last_name,
         cell_number = p_cell_number,
         role = p_role,
-        age = p_age,
+        birth_date = p_birth_date,
         active = p_active,
         updated_at = NOW()
     WHERE user_id = (
