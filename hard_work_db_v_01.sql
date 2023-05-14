@@ -33,7 +33,6 @@ CREATE TABLE `employees` (
   `department` varchar(100) NOT NULL,
   `driver_license` varchar(250) NOT NULL,
   `start_date` date NOT NULL,
-  `end_date` date DEFAULT NULL,
   `wage_per_hour` decimal(10,2) NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
