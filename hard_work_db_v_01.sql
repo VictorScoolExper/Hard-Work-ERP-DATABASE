@@ -31,7 +31,7 @@ CREATE TABLE `employees` (
   `edited_by` bigint DEFAULT NULL,
   `job_title` varchar(100) NOT NULL,
   `department` varchar(100) NOT NULL,
-  `driver_license` varchar(250) NOT NULL,
+  `driver_license` varchar(250) DEFAULT NULL,
   `start_date` date NOT NULL,
   `wage_per_hour` decimal(10,2) NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
