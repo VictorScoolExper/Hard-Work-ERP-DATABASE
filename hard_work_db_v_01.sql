@@ -94,10 +94,10 @@ CREATE TABLE `crews_employees` (
 
 CREATE TABLE `clients` (
   `client_id` bigint NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(100) NOT NULL,
+  `name` varchar(100) NOT NULL,
   `last_name` varchar(100) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `cell_number` varchar(11) NOT NULL,
+  `cell_number` varchar(20) NOT NULL,
   `life_stage` enum('customer','lead','opportunity') DEFAULT 'customer',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
