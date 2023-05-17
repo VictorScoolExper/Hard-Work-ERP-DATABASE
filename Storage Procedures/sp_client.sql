@@ -1,6 +1,6 @@
 -- Insert the client record into the clients table
 CREATE PROCEDURE sp_insert_client(
-  IN p_first_name VARCHAR(100),
+  IN p_name VARCHAR(100),
   IN p_last_name VARCHAR(100),
   IN p_email VARCHAR(255),
   IN p_cell_number VARCHAR(11),
@@ -11,8 +11,8 @@ BEGIN
   DECLARE last_id BIGINT DEFAULT 0;
   DECLARE i INT DEFAULT 0;
   DECLARE num_addresses INT DEFAULT JSON_LENGTH(p_addresses);
-  INSERT INTO clients(first_name, last_name, email, cell_number, life_stage)
-  VALUES (p_first_name, p_last_name, p_email, p_cell_number, p_life_stage);
+  INSERT INTO clients(name, last_name, email, cell_number, life_stage)
+  VALUES (p_name, p_last_name, p_email, p_cell_number, p_life_stage);
   SET last_id = LAST_INSERT_ID();
  
   SET i = 0;
@@ -74,7 +74,7 @@ END;
 -- update client
 CREATE PROCEDURE sp_update_client (
   IN p_client_id BIGINT,
-  IN p_first_name VARCHAR(100),
+  IN p_name VARCHAR(100),
   IN p_last_name VARCHAR(100),
   IN p_email VARCHAR(255),
   IN p_cell_number VARCHAR(11),
@@ -82,7 +82,7 @@ CREATE PROCEDURE sp_update_client (
 )
 BEGIN
   UPDATE clients
-  SET first_name = p_first_name,
+  SET name = p_name,
       last_name = p_last_name,
       email = p_email,
       cell_number = p_cell_number,
