@@ -3,32 +3,27 @@ CREATE PROCEDURE sp_insert_client(
   IN p_name VARCHAR(100),
   IN p_last_name VARCHAR(100),
   IN p_email VARCHAR(255),
-  IN p_cell_number VARCHAR(11),
+  IN p_cell_number VARCHAR(15),
   IN p_life_stage ENUM('customer', 'lead', 'opportunity'),
-  IN p_addresses JSON
+  IN p_street VARCHAR(255),
+  IN p_city VARCHAR(255),
+  IN p_state VARCHAR(255),
+  IN p_zip_code VARCHAR(255),
+  IN p_country VARCHAR(255)
 )
 BEGIN
   DECLARE last_id BIGINT DEFAULT 0;
-  DECLARE i INT DEFAULT 0;
-  DECLARE num_addresses INT DEFAULT JSON_LENGTH(p_addresses);
+
   INSERT INTO clients(name, last_name, email, cell_number, life_stage)
   VALUES (p_name, p_last_name, p_email, p_cell_number, p_life_stage);
   SET last_id = LAST_INSERT_ID();
+
+  INSERT INTO addresses(street, city, state, zip_code, country)
+  VALUES (p_street, p_city, p_state, p_zip_code, p_country);
  
-  SET i = 0;
-  WHILE i < num_addresses DO
-    INSERT INTO addresses(street, city, state, zip_code, country)
-    VALUES (
-      JSON_UNQUOTE(JSON_EXTRACT(p_addresses, CONCAT('$[', i, '].street'))),
-      JSON_UNQUOTE(JSON_EXTRACT(p_addresses, CONCAT('$[', i, '].city'))),
-      JSON_UNQUOTE(JSON_EXTRACT(p_addresses, CONCAT('$[', i, '].state'))),
-      JSON_UNQUOTE(JSON_EXTRACT(p_addresses, CONCAT('$[', i, '].zip_code'))),
-      JSON_UNQUOTE(JSON_EXTRACT(p_addresses, CONCAT('$[', i, '].country')))
-    );
-    INSERT INTO client_addresses(address_id, client_id)
-    VALUES (LAST_INSERT_ID(), last_id);
-    SET i = i + 1;
-  END WHILE;
+  INSERT INTO client_addresses(address_id, client_id)
+  VALUES (LAST_INSERT_ID(), last_id);
+  
 END 
 
 -- Get all clients
