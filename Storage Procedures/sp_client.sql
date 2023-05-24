@@ -50,7 +50,7 @@ BEGIN
 END;
 
 -- get client by client id
-CREATE PROCEDURE sp_get_client (
+CREATE PROCEDURE sp_get_client_by_id (
   IN p_client_id BIGINT
 )
 BEGIN
