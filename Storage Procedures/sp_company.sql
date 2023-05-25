@@ -1,19 +1,21 @@
 -- create company
-CREATE PROCEDURE sp_add_company (IN company_name VARCHAR(255))
+CREATE PROCEDURE sp_create_company (IN company_name VARCHAR(255))
 BEGIN
+ START TRANSACTION;
   INSERT INTO companies (name) VALUES (company_name);
+ COMMIT;
 END
 
 -- get company by company id
-CREATE PROCEDURE sp_getCompanyById(IN companyId INT)
+CREATE PROCEDURE sp_get_company_by_id(IN companyId INT)
 BEGIN
-  SELECT * FROM companies WHERE company_id = companyId;
+  SELECT name FROM companies WHERE company_id = companyId;
 END
 
 -- get all companies
-CREATE PROCEDURE sp_get_all_companies()
+CREATE PROCEDURE sp_get_companies()
 BEGIN
-  SELECT * FROM companies;
+  SELECT company_id, name FROM companies;
 END
 
 -- edit company
@@ -22,9 +24,11 @@ CREATE PROCEDURE sp_update_company(
     IN p_name VARCHAR(100)
 )
 BEGIN
-    UPDATE companies
-    SET name = p_name
-    WHERE company_id = p_company_id;
+	START TRANSACTION;
+	    UPDATE companies
+	    SET name = p_name
+	    WHERE company_id = p_company_id;
+    COMMIT;
 END
 
 -- returns if company exists in table

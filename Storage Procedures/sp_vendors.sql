@@ -9,28 +9,13 @@ CREATE PROCEDURE sp_insert_vendor(
 )
 BEGIN
   DECLARE last_id BIGINT DEFAULT 0;
-  DECLARE i INT;
-  DECLARE num_addresses INT DEFAULT JSON_LENGTH(p_addresses);
- 
- 
-  INSERT INTO vendors(name, last_name, company_id, cell_number, email)
-  VALUES (p_name, p_last_name, p_company_id, p_cell_number, p_email);
-  SET last_id = LAST_INSERT_ID();
+  START TRANSACTION;
+    INSERT INTO vendors(name, last_name, company_id, cell_number, email)
+    VALUES (p_name, p_last_name, p_company_id, p_cell_number, p_email);
+    SET last_id = LAST_INSERT_ID();
 
-  SET i = 0;
-  WHILE i < num_addresses DO
-    INSERT INTO addresses(street, city, state, zip_code, country)
-    VALUES (
-      JSON_UNQUOTE(JSON_EXTRACT(p_addresses, CONCAT('$[', i, '].street'))),
-      JSON_UNQUOTE(JSON_EXTRACT(p_addresses, CONCAT('$[', i, '].city'))),
-      JSON_UNQUOTE(JSON_EXTRACT(p_addresses, CONCAT('$[', i, '].state'))),
-      JSON_UNQUOTE(JSON_EXTRACT(p_addresses, CONCAT('$[', i, '].zip_code'))),
-      JSON_UNQUOTE(JSON_EXTRACT(p_addresses, CONCAT('$[', i, '].country')))
-    );
-    INSERT INTO vendor_addresses(address_id, vendor_id)
-    VALUES (LAST_INSERT_ID(), last_id);
-    SET i = i + 1;
-  END WHILE;
+    INSERT INTO addresses
+  COMMIT;
 END;
 
 -- get all vendors 

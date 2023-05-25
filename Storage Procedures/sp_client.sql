@@ -1,33 +1,41 @@
 -- Insert the client record into the clients table
-CREATE PROCEDURE sp_insert_client(
+CREATE PROCEDURE sp_insert_vendor(
   IN p_name VARCHAR(100),
   IN p_last_name VARCHAR(100),
+  IN p_company_id BIGINT,
+  IN p_cell_number VARCHAR(20),
   IN p_email VARCHAR(255),
-  IN p_cell_number VARCHAR(15),
-  IN p_life_stage ENUM('customer', 'lead', 'opportunity'),
   IN p_street VARCHAR(255),
-  IN p_city VARCHAR(255),
-  IN p_state VARCHAR(255),
-  IN p_zip_code VARCHAR(255),
-  IN p_country VARCHAR(255)
+  IN p_city VARCHAR(100),
+  IN p_state VARCHAR(100),
+  IN p_zip_code VARCHAR(20),
+  IN p_country VARCHAR(10)
 )
 BEGIN
-  DECLARE last_id BIGINT DEFAULT 0;	
-	
+  DECLARE last_id BIGINT DEFAULT 0;
   START TRANSACTION;
+    INSERT
+	INTO
+	vendors(name,
+	last_name,
+	company_id,
+	cell_number,
+	email)
+VALUES (p_name,
+p_last_name,
+p_company_id,
+p_cell_number,
+p_email);
+--    save for vendor_address insert
+    SET last_id = LAST_INSERT_ID();
 
-  INSERT INTO clients(name, last_name, email, cell_number, life_stage)
-  VALUES (p_name, p_last_name, p_email, p_cell_number, p_life_stage);
-  SET last_id = LAST_INSERT_ID();
-
-  INSERT INTO addresses(street, city, state, zip_code, country)
-  VALUES (p_street, p_city, p_state, p_zip_code, p_country);
- 
-  INSERT INTO client_addresses(address_id, client_id)
-  VALUES (LAST_INSERT_ID(), last_id);
-  
+    INSERT INTO addresses(street, city, state, zip_code, country)
+    VALUES (p_street, p_city, p_state, p_zip_code, p_country);
+   
+    INSERT INTO vendor_addresses (address_id, vendor_id)
+    VALUES (LAST_INSERT_ID(), last_id);
   COMMIT;
-END 
+END;
 
 -- Get all clients
 CREATE PROCEDURE sp_get_clients()
