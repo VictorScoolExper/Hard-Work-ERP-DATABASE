@@ -130,6 +130,7 @@ CREATE TABLE `client_addresses` (
 CREATE TABLE `companies` (
   `company_id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
+  `service_type` varchar(100) NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`company_id`)
