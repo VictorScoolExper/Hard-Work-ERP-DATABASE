@@ -137,7 +137,7 @@ CREATE TABLE `companies` (
 
 CREATE TABLE `vendors` (
   `vendor_id` bigint NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(100) NOT NULL,
+  `name` varchar(100) NOT NULL,
   `last_name` varchar(100) DEFAULT NULL,
   `company_id` bigint NOT NULL,
   `cell_number` varchar(20) NOT NULL,
