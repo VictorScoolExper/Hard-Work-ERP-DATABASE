@@ -80,7 +80,7 @@ CREATE PROCEDURE sp_update_client (
   IN p_name VARCHAR(100),
   IN p_last_name VARCHAR(100),
   IN p_email VARCHAR(255),
-  IN p_cell_number VARCHAR(11),
+  IN p_cell_number VARCHAR(20),
   IN p_life_stage ENUM('customer', 'lead', 'opportunity')
 )
 BEGIN
