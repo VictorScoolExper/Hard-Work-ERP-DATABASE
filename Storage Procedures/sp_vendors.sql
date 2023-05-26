@@ -30,12 +30,13 @@ p_email);
 --    save for vendor_address insert
     SET last_id = LAST_INSERT_ID();
    
-IF p_include_address = 'true' THEN
+IF p_include_address = true THEN
     INSERT INTO addresses(street, city, state, zip_code, country)
     VALUES (p_street, p_city, p_state, p_zip_code, p_country);
    
     INSERT INTO vendor_addresses (address_id, vendor_id)
     VALUES (LAST_INSERT_ID(), last_id);
+ 
 END IF;
   COMMIT;
 END;
