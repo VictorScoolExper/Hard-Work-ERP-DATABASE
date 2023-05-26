@@ -1,8 +1,12 @@
 -- create company
-CREATE PROCEDURE sp_create_company (IN company_name VARCHAR(255))
+CREATE PROCEDURE sp_create_company 
+(
+	IN p_name VARCHAR(100), 
+	IN p_company_type VARCHAR(100)
+)
 BEGIN
  START TRANSACTION;
-  INSERT INTO companies (name) VALUES (company_name);
+  INSERT INTO companies (name, service_type) VALUES (p_name, p_company_type);
  COMMIT;
 END
 
@@ -15,20 +19,22 @@ END
 -- get all companies
 CREATE PROCEDURE sp_get_companies()
 BEGIN
-  SELECT company_id, name FROM companies;
+  SELECT company_id, name, service_type FROM companies;
 END
 
 -- edit company
 CREATE PROCEDURE sp_update_company(
     IN p_company_id BIGINT,
-    IN p_name VARCHAR(100)
+    IN p_name VARCHAR(100),
+    IN p_service_type VARCHAR(100)
 )
 BEGIN
 	START TRANSACTION;
 	    UPDATE companies
-	    SET name = p_name
+	    SET name = p_name,
+          service_type = p_service_type
 	    WHERE company_id = p_company_id;
-    COMMIT;
+  COMMIT;
 END
 
 -- returns if company exists in table
