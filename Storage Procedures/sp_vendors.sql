@@ -5,18 +5,38 @@ CREATE PROCEDURE sp_insert_vendor(
   IN p_company_id BIGINT,
   IN p_cell_number VARCHAR(20),
   IN p_email VARCHAR(255),
-  IN p_addresses JSON
+  IN p_street VARCHAR(255),
+  IN p_city VARCHAR(100),
+  IN p_state VARCHAR(100),
+  IN p_zip_code VARCHAR(20),
+  IN p_country VARCHAR(10)
 )
 BEGIN
   DECLARE last_id BIGINT DEFAULT 0;
   START TRANSACTION;
-    INSERT INTO vendors(name, last_name, company_id, cell_number, email)
-    VALUES (p_name, p_last_name, p_company_id, p_cell_number, p_email);
+    INSERT
+	INTO
+	vendors(name,
+	last_name,
+	company_id,
+	cell_number,
+	email)
+VALUES (p_name,
+p_last_name,
+p_company_id,
+p_cell_number,
+p_email);
+--    save for vendor_address insert
     SET last_id = LAST_INSERT_ID();
 
-    INSERT INTO addresses
+    INSERT INTO addresses(street, city, state, zip_code, country)
+    VALUES (p_street, p_city, p_state, p_zip_code, p_country);
+   
+    INSERT INTO vendor_addresses (address_id, vendor_id)
+    VALUES (LAST_INSERT_ID(), last_id);
   COMMIT;
 END;
+
 
 -- get all vendors 
 CREATE PROCEDURE sp_get_all_vendor()
