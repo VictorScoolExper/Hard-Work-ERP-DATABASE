@@ -9,7 +9,8 @@ CREATE PROCEDURE sp_insert_vendor(
   IN p_city VARCHAR(100),
   IN p_state VARCHAR(100),
   IN p_zip_code VARCHAR(20),
-  IN p_country VARCHAR(10)
+  IN p_country VARCHAR(10),
+  IN p_include_address VARCHAR(5)
 )
 BEGIN
   DECLARE last_id BIGINT DEFAULT 0;
@@ -28,12 +29,14 @@ p_cell_number,
 p_email);
 --    save for vendor_address insert
     SET last_id = LAST_INSERT_ID();
-
+   
+IF p_include_address = 'true' THEN
     INSERT INTO addresses(street, city, state, zip_code, country)
     VALUES (p_street, p_city, p_state, p_zip_code, p_country);
    
     INSERT INTO vendor_addresses (address_id, vendor_id)
     VALUES (LAST_INSERT_ID(), last_id);
+END IF;
   COMMIT;
 END;
 
