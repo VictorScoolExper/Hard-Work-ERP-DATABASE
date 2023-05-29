@@ -17,16 +17,20 @@ BEGIN
   START TRANSACTION;
     INSERT
 	INTO
-	vendors(name,
-	last_name,
-	company_id,
-	cell_number,
-	email)
-VALUES (p_name,
-p_last_name,
-p_company_id,
-p_cell_number,
-p_email);
+	vendors(
+        name,
+        last_name,
+        company_id,
+        cell_number,
+        email
+    )
+    VALUES (
+        p_name,
+        p_last_name,
+        p_company_id,
+        p_cell_number,
+        p_email
+    );
 --    save for vendor_address insert
     SET last_id = LAST_INSERT_ID();
    
@@ -45,7 +49,14 @@ END;
 -- get all vendors 
 CREATE PROCEDURE sp_get_all_vendor()
 BEGIN 
-  SELECT * FROM vendors;
+    SELECT v.vendor_id, v.name, v.last_name, v.cell_number, v.email, v.company_id,
+        a.address_id, a.street, a.city, a.state, a.zip_code, a.country
+    FROM vendors v
+    -- The LEFT JOIN includes all rows from the vendors table, even if there is no 
+    -- match in the vendor_addresses or addresses tables. This ensures that all vendors 
+    -- are returned, regardless of whether they have associated addresses or not.
+    LEFT JOIN vendor_addresses va ON v.vendor_id = va.vendor_id
+    LEFT JOIN addresses a ON va.address_id = a.address_id;
 END
 
 -- get single vendor by vendor id
@@ -53,37 +64,67 @@ CREATE PROCEDURE sp_get_single_vendor(
   IN p_id BIGINT
 )
 BEGIN 
-  SELECT * FROM vendors WHERE vendor_id = p_id;
+    SELECT v.vendor_id, v.name, v.last_name, v.cell_number, v.email, v.company_id,
+        a.address_id, a.street, a.city, a.state, a.zip_code, a.country
+    FROM vendors v
+    JOIN vendor_addresses va ON v.vendor_id = va.vendor_id
+    JOIN addresses a ON va.address_id = a.address_id
+    WHERE v.vendor_id = p_id; 
 END
 
 -- get vendor address by vendor id
-CREATE PROCEDURE sp_get_vendor_addresses(IN v_vendor_id BIGINT)
+CREATE PROCEDURE sp_get_vendor_addresses(IN p_vendor_id BIGINT)
 BEGIN
-    SELECT a.*
+    SELECT a.address_id, a.street, a.city, a.state, a.zip_code, a.country
     FROM addresses a
     INNER JOIN vendor_addresses va ON a.address_id = va.address_id
-    WHERE va.vendor_id = v_vendor_id;
+    WHERE va.vendor_id = p_vendor_id;
 END 
 
--- modify vendor 
-CREATE PROCEDURE sp_modify_vendor(
-    IN v_vendor_id BIGINT, 
-    IN v_first_name VARCHAR(100), 
-    IN v_last_name VARCHAR(100),
-    IN v_company_id BIGINT,
-    IN v_cell_number VARCHAR(20),
-    IN v_email VARCHAR(255)
+-- update vendor and address if neccesary
+DROP PROCEDURE IF EXISTS sp_update_vendor;
+CREATE PROCEDURE sp_update_vendor(
+    IN p_vendor_id BIGINT, 
+    IN p_name VARCHAR(100), 
+    IN p_last_name VARCHAR(100),
+    IN p_company_id BIGINT,
+    IN p_cell_number VARCHAR(20),
+    IN p_email VARCHAR(255),
+    IN p_addressId INT,
+    IN p_street VARCHAR(255),
+    IN p_city VARCHAR(100),
+    IN p_state VARCHAR(100),
+    IN p_zip_code VARCHAR(15),
+    IN p_country VARCHAR(5),
+    IN p_include_address VARCHAR(5)
 )
 BEGIN
-    UPDATE vendors
-    SET 
-        first_name = v_first_name, 
-        last_name = v_last_name, 
-        company_id = v_company_id, 
-        cell_number = v_cell_number,
-        email = v_email
-    WHERE vendor_id = v_vendor_id;
-END 
+	START TRANSACTION;
+	UPDATE vendors
+	SET 
+	        name = p_name, 
+	        last_name = p_last_name, 
+	        company_id = p_company_id, 
+	        cell_number = p_cell_number,
+	        email = p_email
+	WHERE
+	vendor_id = p_vendor_id;
+	   
+	IF p_include_address = true THEN
+		 IF p_addressId IS NULL THEN
+		 	INSERT INTO addresses(street, city, state, zip_code, country)
+		    VALUES (p_street, p_city, p_state, p_zip_code, p_country);
+		   
+		    INSERT INTO vendor_addresses (address_id, vendor_id)
+		    VALUES (LAST_INSERT_ID(), p_vendor_id);
+		 ELSE 
+		 	UPDATE addresses
+		    SET street = p_street, city = p_city, state = p_state, zip_code = p_zip_code, country = p_country
+		    WHERE address_id = p_addressId;
+		 END IF; 
+    END IF;
+   COMMIT;
+END;
 
 -- Delete address by recieving vendor_id and address_id
 CREATE PROCEDURE sp_delete_vendor_address(
@@ -101,27 +142,4 @@ BEGIN
     END IF;
 END 
 
--- Update Vendor Address 
-CREATE PROCEDURE sp_update_address(
-    IN v_vendor_id BIGINT,
-    IN v_address_id BIGINT,
-    IN v_street VARCHAR(255),
-    IN v_city VARCHAR(255),
-    IN v_state VARCHAR(255),
-    IN v_zip_code VARCHAR(255),
-    IN v_country VARCHAR(255)
-)
-BEGIN
-    -- Check if the vendor and address are associated with each other
-    IF EXISTS (SELECT * FROM vendor_addresses WHERE vendor_id = v_vendor_id AND address_id = v_address_id) THEN
-        -- If the vendor and address are associated with each other, update the record in addresses table
-        UPDATE addresses SET
-            street = v_street,
-            city = v_city,
-            state = v_state,
-            zip_code = v_zip_code,
-            country = v_country
-        WHERE address_id = v_address_id;
-    END IF;
-END;
 
