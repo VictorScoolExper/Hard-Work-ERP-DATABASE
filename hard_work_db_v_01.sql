@@ -152,6 +152,7 @@ CREATE TABLE `vendors` (
 
 CREATE TABLE `vendor_addresses` (
   `address_id` bigint NOT NULL,
+  -- TODO change vendor_id to unique so that only one address can be associated with one vendor
   `vendor_id` bigint NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
