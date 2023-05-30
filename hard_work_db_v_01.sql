@@ -172,4 +172,5 @@ CREATE TABLE `services` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`service_id`)
+  -- TODO: add delete cascade
 )
