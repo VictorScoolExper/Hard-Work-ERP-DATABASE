@@ -110,7 +110,7 @@ BEGIN
 	WHERE
 	vendor_id = p_vendor_id;
 	   
-	IF p_include_address = true THEN
+	IF p_include_address THEN
 		 IF p_addressId IS NULL THEN
 		 	INSERT INTO addresses(street, city, state, zip_code, country)
 		    VALUES (p_street, p_city, p_state, p_zip_code, p_country);
@@ -122,7 +122,7 @@ BEGIN
 		    SET street = p_street, city = p_city, state = p_state, zip_code = p_zip_code, country = p_country
 		    WHERE address_id = p_addressId;
 		 END IF; 
-    END IF;
+     END IF;
    COMMIT;
 END;
 
