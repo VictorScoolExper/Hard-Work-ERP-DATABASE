@@ -164,7 +164,7 @@ CREATE TABLE `vendor_addresses` (
 
 CREATE TABLE `services` (
   `service_id` int NOT NULL AUTO_INCREMENT,
-  `service_name` varchar(255) NOT NULL,
+  `service_name` varchar(100) NOT NULL,
   `description` text NOT NULL,
   `is_per_hour` tinyint NOT NULL,
   `price` decimal(10,2) NOT NULL,
