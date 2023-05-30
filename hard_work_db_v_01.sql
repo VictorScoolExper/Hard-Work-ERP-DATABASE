@@ -161,3 +161,15 @@ CREATE TABLE `vendor_addresses` (
   CONSTRAINT `vendor_addresses_ibfk_1` FOREIGN KEY (`address_id`) REFERENCES `addresses` (`address_id`) ON DELETE CASCADE,
   CONSTRAINT `vendor_addresses_ibfk_2` FOREIGN KEY (`vendor_id`) REFERENCES `vendors` (`vendor_id`) ON DELETE CASCADE
 )
+
+CREATE TABLE `services` (
+  `service_id` int NOT NULL AUTO_INCREMENT,
+  `service_name` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `is_per_hour` tinyint NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `duration_minutes` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`service_id`)
+)
