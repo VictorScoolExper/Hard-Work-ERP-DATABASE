@@ -3,7 +3,7 @@ DROP PROCEDURE IF EXISTS sp_create_service;
 CREATE PROCEDURE sp_create_service(
 	IN p_service_name VARCHAR(100),
 	IN p_description TEXT,
-	IN p_is_per_hour TINYINT,
+	IN p_is_per_hour VARCHAR(5),
 	IN p_price DECIMAL(10,2)
 )
 BEGIN
@@ -28,7 +28,7 @@ CREATE PROCEDURE sp_update_service(
 	IN p_service_id INT,
 	IN p_service_name VARCHAR(100),
 	IN p_description TEXT,
-	IN p_is_per_hour TINYINT,
+	IN p_is_per_hour VARCHAR(5),
 	IN p_price DECIMAL(10,2)
 )
 BEGIN
