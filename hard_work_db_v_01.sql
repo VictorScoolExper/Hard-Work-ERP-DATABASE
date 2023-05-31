@@ -173,3 +173,12 @@ CREATE TABLE `services` (
   PRIMARY KEY (`service_id`)
   -- TODO: add delete cascade
 )
+
+
+
+CREATE TABLE `general_settings`(
+  `sales_tax` decimal(10,2) NOT NULL,
+  `percent_markup` INT NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+)
