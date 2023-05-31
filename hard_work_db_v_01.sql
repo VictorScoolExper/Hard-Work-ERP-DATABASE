@@ -168,7 +168,6 @@ CREATE TABLE `services` (
   `description` text NOT NULL,
   `is_per_hour` VARCHAR(5) NOT NULL,
   `price` decimal(10,2) NOT NULL,
-  `duration_minutes` int NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`service_id`)
