@@ -4,22 +4,21 @@ CREATE PROCEDURE sp_create_service(
 	IN p_service_name VARCHAR(100),
 	IN p_description TEXT,
 	IN p_is_per_hour TINYINT,
-	IN p_price DECIMAL(10,2),
-	IN p_duration_min INT
+	IN p_price DECIMAL(10,2)
 )
 BEGIN
 	START TRANSACTION;
-		INSERT INTO services (service_name, description, is_per_hour, price, duration_minutes)
-		VALUES (p_service_name, p_description, p_is_per_hour, p_price, p_duration_min);
+		INSERT INTO services (service_name, description, is_per_hour, price )
+		VALUES (p_service_name, p_description, p_is_per_hour, p_price );
 	COMMIT;
 END
 
 -- Get services
-DROP PROCEDURE IF EXISTS sp_get_service;
+DROP PROCEDURE IF EXISTS sp_get_services;
 CREATE PROCEDURE sp_get_service()
 BEGIN
 	START TRANSACTION;
-		SELECT service_id, service_name, description, is_per_hour, price, duration_minutes FROM services;
+		SELECT service_id, service_name, description, is_per_hour, price FROM services;
 	COMMIT;
 END
 
@@ -30,8 +29,7 @@ CREATE PROCEDURE sp_update_service(
 	IN p_service_name VARCHAR(100),
 	IN p_description TEXT,
 	IN p_is_per_hour TINYINT,
-	IN p_price DECIMAL(10,2),
-	IN p_duration_min INT
+	IN p_price DECIMAL(10,2)
 )
 BEGIN
 	START TRANSACTION;
@@ -39,8 +37,7 @@ BEGIN
 		SET service_name = p_service_name, 
 			description =  p_description, 
 			is_per_hour = p_is_per_hour, 
-			price = p_price, 
-			duration_minutes = p_duration_min
+			price = p_price
 		WHERE service_id = p_service_id;
 	COMMIT;
 END
