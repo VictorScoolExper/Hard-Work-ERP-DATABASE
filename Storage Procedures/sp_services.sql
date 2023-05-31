@@ -15,7 +15,7 @@ END
 
 -- Get services
 DROP PROCEDURE IF EXISTS sp_get_services;
-CREATE PROCEDURE sp_get_service()
+CREATE PROCEDURE sp_get_services()
 BEGIN
 	START TRANSACTION;
 		SELECT service_id, service_name, description, is_per_hour, price FROM services;
