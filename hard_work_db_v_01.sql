@@ -166,7 +166,7 @@ CREATE TABLE `services` (
   `service_id` int NOT NULL AUTO_INCREMENT,
   `service_name` varchar(100) NOT NULL,
   `description` text NOT NULL,
-  `is_per_hour` tinyint NOT NULL,
+  `is_per_hour` VARCHAR(5) NOT NULL,
   `price` decimal(10,2) NOT NULL,
   `duration_minutes` int NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
