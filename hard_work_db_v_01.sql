@@ -184,11 +184,13 @@ CREATE TABLE `materials` (
   PRIMARY KEY (`material_id`)
 ); 
 
-CREATE TABLE `general_settings`(
-  `sales_tax_percent` decimal(10,2) NOT NULL,
-  `mark_up_percent` DECIMAL(10,2) NOT NULL,
+CREATE TABLE `app_settings`(
+  `setting_id` INT NOT NULL AUTO_INCREMENT,
+  `setting_name` VARCHAR(100) NOT NULL,
+  `setting_value` VARCHAR(100) NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (setting_id)
 );
 
 -- TODO: CHART OF ACCOUNTS TABLE
