@@ -1,13 +1,3 @@
--- CREATE TABLE `app_settings`(
---   `setting_id` INT NOT NULL AUTO_INCREMENT,
---   `setting_name` VARCHAR(100) NOT NULL,
---   `setting_value` VARCHAR(100) NOT NULL,
---   `type_value` enum('percent','number','string'),
---   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
---   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
---   PRIMARY KEY (setting_id)
--- );
-
 CREATE PROCEDURE `sp_create_app_settings`(
     IN p_setting_name VARCHAR(100),
     IN p_setting_value VARCHAR(100),
