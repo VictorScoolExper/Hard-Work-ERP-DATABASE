@@ -1,5 +1,5 @@
-DROP PROCEDURE IF EXISTS sp_create_materials;
-CREATE PROCEDURE sp_create_materials (
+DROP PROCEDURE IF EXISTS sp_create_material;
+CREATE PROCEDURE sp_create_material (
     IN p_material_name VARCHAR(100),
     IN p_description VARCHAR(255),
     IN p_unit enum('yard','ton','piece')
