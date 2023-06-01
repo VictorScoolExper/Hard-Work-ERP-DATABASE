@@ -1,32 +1,49 @@
+-- CREATE TABLE `app_settings`(
+--   `setting_id` INT NOT NULL AUTO_INCREMENT,
+--   `setting_name` VARCHAR(100) NOT NULL,
+--   `setting_value` VARCHAR(100) NOT NULL,
+--   `type_value` enum('percent','number','string'),
+--   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+--   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+--   PRIMARY KEY (setting_id)
+-- );
 
-
-CREATE PROCEDURE `sp_create_genderal_settings`(
-    IN p_sales_tax_percent decimal(10,2),
-    IN p_mark_up_percent decimal(10,2)
+CREATE PROCEDURE `sp_create_app_settings`(
+    IN p_setting_name VARCHAR(100),
+    IN p_setting_value VARCHAR(100),
+    IN p_type_value enum('percent','number','string')
 )
 BEGIN
     START TRANSACTION;
-        INSERT INTO general_settings (sales_tax_percent, mark_up_percent)
-        VALUES (p_sales_tax_percent, p_mark_up_percent);
+        INSERT INTO app_settings (setting_name, setting_value, type_value)
+        VALUES (p_setting_name, p_setting_value, p_type_value);
     COMMIT;
 END;
 
-CREATE PROCEDURE `sp_get_general_settings` ()
+CREATE PROCEDURE `sp_get_app_settings` ()
 BEGIN
     START TRANSACTION;
-        SELECT sales_tax_percent, mark_up_percent FROM general_settings;
+        SELECT setting_name, setting_value, type_value FROM app_settings;
     COMMIT;
 END;
 
-CREATE PROCEDURE `sp_update_general_settings`(
-    IN p_sales_tax_percent decimal(10,2),
-    IN p_mark_up_percent decimal(10,2)
+CREATE PROCEDURE `sp_update_app_setting`(
+    IN p_setting_name VARCHAR(100),
+    IN p_setting_value VARCHAR(100)
 )
 BEGIN
     START TRANSACTION;
-        UPDATE general_settings 
-        SET sales_tax_percent = p_sales_tax_percent,
-            mark_up_percent = p_mark_up_percent
-        WHERE 
+        UPDATE app_settings 
+        SET setting_value = p_setting_value
+        WHERE setting_name = p_setting_name;
+    COMMIT;
+END;
+
+CREATE PROCEDURE `sp_delete_app_settings`(
+    IN p_setting_id INT
+)
+BEGIN 
+    START TRANSACTION;
+        DELETE FROM app_settings WHERE setting_id = p_setting_id;
     COMMIT;
 END;
