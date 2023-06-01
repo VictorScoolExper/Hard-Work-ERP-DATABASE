@@ -185,8 +185,11 @@ CREATE TABLE `materials` (
 ); 
 
 CREATE TABLE `general_settings`(
-  `sales_tax` decimal(10,2) NOT NULL,
-  `percent_markup` INT NOT NULL,
+  `sales_tax_percent` decimal(10,2) NOT NULL,
+  `mark_up_percent` DECIMAL(10,2) NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-)
+);
+
+-- TODO: CHART OF ACCOUNTS TABLE
+
