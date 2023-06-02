@@ -1,4 +1,4 @@
-CREATE PROCEDURE `sp_create_app_settings`(
+CREATE PROCEDURE `sp_create_app_setting`(
     IN p_setting_name VARCHAR(100),
     IN p_setting_value VARCHAR(100),
     IN p_type_value enum('percent','number','string')
@@ -19,12 +19,14 @@ END;
 
 CREATE PROCEDURE `sp_update_app_setting`(
     IN p_setting_name VARCHAR(100),
-    IN p_setting_value VARCHAR(100)
+    IN p_setting_value VARCHAR(100),
+    IN p_type_value enum('percent','number','string')
 )
 BEGIN
     START TRANSACTION;
         UPDATE app_settings 
-        SET setting_value = p_setting_value
+        SET setting_value = p_setting_value,
+            type_value = p_type_value
         WHERE setting_name = p_setting_name;
     COMMIT;
 END;
