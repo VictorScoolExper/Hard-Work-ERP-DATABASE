@@ -231,8 +231,6 @@ CREATE TABLE `service_receipts`(
   CONSTRAINT `client_service_id_ibfk_1` FOREIGN KEY (`client_service_id`) REFERENCES `client_service_schedule` (`service_schedule_id`)
 );
 
--- Project Management
-
 -- app settings table
 
 CREATE TABLE `app_settings`(
