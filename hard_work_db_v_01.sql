@@ -91,7 +91,7 @@ CREATE TABLE `crews_employees` (
   CONSTRAINT `crews_employees_ibfk_2` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`employee_id`) ON DELETE CASCADE
 )
 
-
+-- ADD MR or MRS column
 CREATE TABLE `clients` (
   `client_id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
@@ -165,7 +165,7 @@ CREATE TABLE `vendor_addresses` (
 CREATE TABLE `services` (
   `service_id` int NOT NULL AUTO_INCREMENT,
   `service_name` varchar(100) NOT NULL,
-  `description` text NOT NULL,
+  `description`  NOT NULL,
   `is_per_hour` VARCHAR(5) NOT NULL,
   `price` decimal(10,2) NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -184,6 +184,56 @@ CREATE TABLE `materials` (
   PRIMARY KEY (`material_id`)
 ); 
 
+-- This is how the Maintenance or jobs repeated frequently
+-- contains the service done to client
+CREATE TABLE `client_service_schedule`(
+  `service_schedule_id` INT AUTO_INCREMENT NOT NULL,
+  `client_id` INT NOT NULL,
+  `service_id` INT NOT NULL,
+  `address_id` INT NOT NULL,
+  `qty` INT NOT NULL,
+  `to_do_date` date NOT NULL,
+  `is_finished` enum('pending', 'in-progress', 'done', 'canceled') NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT `client_id_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `clients` (`client_id`),
+  CONSTRAINT `service_id_ibfk_2` FOREIGN KEY (`service_id`) REFERENCES `services` (`service_id`),
+  CONSTRAINT `address_id_ibfk_3` FOREIGN KEY (`address_id`) REFERENCES `addresses` (`address_id`)
+);  
+
+CREATE TABLE `employees_at_service`(
+  `client_serviced_id` INT NOT NULL,
+  `employee_id` INT NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT `client_serviced_id_ibfk_1` FOREIGN KEY (`client_serviced_id`) REFERENCES `client_service_schedule` (`service_schedule_id`),
+  CONSTRAINT `employee_id_ibfk_2` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`employee_id`)
+
+);
+
+CREATE TABLE `client_service_materials`(
+  `client_service_id` INT NOT NULL,
+  `material_id` INT NOT NULL,
+  `qty` INT NOT NULL,
+  `sub_total` decimal(10,2) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT `client_service_id_ibfk_1` FOREIGN KEY (`client_service_id`) REFERENCES `client_service_schedule` (`service_schedule_id`)
+);
+
+CREATE TABLE `service_receipts`(
+  `receipt_id` INT NOT NULL,
+  `bucket_file_name` VARCHAR(255),
+  `client_service_id` INT NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT `client_service_id_ibfk_1` FOREIGN KEY (`client_service_id`) REFERENCES `client_service_schedule` (`service_schedule_id`)
+);
+
+-- Project Management
+
+-- app settings table
+
 CREATE TABLE `app_settings`(
   `setting_id` INT NOT NULL AUTO_INCREMENT,
   `setting_name` VARCHAR(100) NOT NULL UNIQUE,
@@ -191,8 +241,48 @@ CREATE TABLE `app_settings`(
   `type_value` enum('percent','number','string'),
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (setting_id)
+  PRIMARY KEY (`setting_id`)
 );
+
+
+-- Invoice related tables
+CREATE TABLE `invoices`(
+  `invoice_id` INT NOT NULL AUTO_INCREMENT,
+  `client_id` INT NOT NULL,
+  `invoice_date` date NOT NULL,
+  `due_date` date NOT NULL,
+  `invoice_subject` text NOT NULL,
+  `sub_total` decimal(10,2) NOT NULL,
+  `sale_tax` decimal(10,2) NOT NULL,
+  `total` decimal(10,2) NOT NULL,
+  `is_paid` TINYINT NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`invoice_id`),
+  CONSTRAINT `client_id_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `clients` (`client_id`)
+);
+
+CREATE TABLE `invoice_discount`(
+  `invoice_id` INT NOT NULL,
+  `discount_num` decimal NOT NULL,
+  `type` enum('percent', 'number') NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT `invoice_id_ibfk_1` FOREIGN KEY (`invoice_id`) REFERENCES `invoices` (`invoice_id`)
+)
+-- this table assoicated services already done with invoices
+CREATE TABLE `invoice_services`(
+  `invoice_id` INT NOT NULL,
+  `service_id` INT NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT `invoice_id_ibfk_1` FOREIGN KEY (`invoice_id`) REFERENCES `invoices` (`invoice_id`),
+  CONSTRAINT `service_id_ibfk_2` FOREIGN KEY (`service_id`) REFERENCES `services` (`service_id`)
+);  
+
+
+
+
 
 -- TODO: CHART OF ACCOUNTS TABLE
 
