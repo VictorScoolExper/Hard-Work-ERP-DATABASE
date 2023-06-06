@@ -193,6 +193,7 @@ CREATE TABLE `client_service_schedule`(
   `address_id` INT NOT NULL,
   `qty` INT NOT NULL,
   `to_do_date` date NOT NULL,
+  `type` enum('project', 'service') NOT NULL,
   `is_finished` enum('pending', 'in-progress', 'done', 'canceled') NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
