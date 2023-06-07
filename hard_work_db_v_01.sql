@@ -192,6 +192,7 @@ CREATE TABLE `client_service_schedule`(
   `service_id` INT NOT NULL,
   `address_id` INT NOT NULL,
   `qty` INT NOT NULL,
+  `start_time` TIME NOT NULL,
   `to_do_date` date NOT NULL,
   `type` enum('project', 'service') NOT NULL,
   `is_finished` enum('pending', 'in-progress', 'done', 'canceled') NOT NULL,
