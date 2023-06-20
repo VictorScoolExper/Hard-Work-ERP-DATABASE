@@ -184,8 +184,7 @@ CREATE TABLE `materials` (
   PRIMARY KEY (`material_id`)
 ); 
 
--- This is how the Maintenance or jobs repeated frequently
--- contains the service done to client
+-- This is used for associating multiple services with a project 
 CREATE TABLE `client_service_schedule`(
   `service_schedule_id` INT AUTO_INCREMENT NOT NULL,
   `client_id` INT NOT NULL,
@@ -203,6 +202,30 @@ CREATE TABLE `client_service_schedule`(
   CONSTRAINT `address_id_ibfk_3` FOREIGN KEY (`address_id`) REFERENCES `addresses` (`address_id`)
 );  
 
+CREATE TABLE `projects` (
+  `project_id` INT AUTO_INCREMENT NOT NULL,
+  `name` VARCHAR(100) NOT NULL,
+  `description` TEXT NOT NULL,
+  `client_id` INT NOT NULL,
+  `billing_method` enum('fixed', 'per_hour', 'per_service') NOT NULL,
+  `status` enum('pending', 'in-progress', 'done', 'canceled') NOT NULL,
+  `start_day` date NOT NULL,
+  `finish_day` date NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`project_id`),
+  CONSTRAINT `client_id_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `clients` (`client_id`)
+);
+
+CREATE TABLE `project_services` (
+  `service_id` INT NOT NULL,
+  `project_id` INT NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT `service_id_ibfk_1` FOREIGN KEY (`service_id`) REFERENCES `services` (`service_id`),
+  CONSTRAINT `project_id_ibfk_2` FOREIGN KEY (`project_id`) REFERENCES `projects` (`project_id`) 
+); 
+
 CREATE TABLE `employees_at_service`(
   `client_serviced_id` INT NOT NULL,
   `employee_id` INT NOT NULL,
@@ -210,7 +233,6 @@ CREATE TABLE `employees_at_service`(
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT `client_serviced_id_ibfk_1` FOREIGN KEY (`client_serviced_id`) REFERENCES `client_service_schedule` (`service_schedule_id`),
   CONSTRAINT `employee_id_ibfk_2` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`employee_id`)
-
 );
 
 CREATE TABLE `client_service_materials`(
@@ -279,10 +301,6 @@ CREATE TABLE `invoice_services`(
   CONSTRAINT `invoice_id_ibfk_1` FOREIGN KEY (`invoice_id`) REFERENCES `invoices` (`invoice_id`),
   CONSTRAINT `service_id_ibfk_2` FOREIGN KEY (`service_id`) REFERENCES `services` (`service_id`)
 );  
-
-
-
-
 
 -- TODO: CHART OF ACCOUNTS TABLE
 
