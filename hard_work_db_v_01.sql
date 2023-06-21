@@ -190,7 +190,6 @@ CREATE TABLE `client_service_schedule`(
   `client_id` INT NOT NULL,
   `service_id` INT NOT NULL,
   `address_id` INT NOT NULL,
-  `qty` INT NOT NULL,
   `start_time` TIME NOT NULL,
   `to_do_date` date NOT NULL,
   `type` enum('project', 'service') NOT NULL,
@@ -202,6 +201,26 @@ CREATE TABLE `client_service_schedule`(
   CONSTRAINT `address_id_ibfk_3` FOREIGN KEY (`address_id`) REFERENCES `addresses` (`address_id`)
 );  
 
+CREATE TABLE `employees_at_service`(
+  `client_serviced_id` INT NOT NULL,
+  `employee_id` INT NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT `client_serviced_id_ibfk_1` FOREIGN KEY (`client_serviced_id`) REFERENCES `client_service_schedule` (`service_schedule_id`),
+  CONSTRAINT `employee_id_ibfk_2` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`employee_id`)
+);
+
+CREATE TABLE `client_service_materials`(
+  `client_service_id` INT NOT NULL,
+  `material_id` INT NOT NULL,
+  `qty` INT NOT NULL,
+  `sub_total` decimal(10,2) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT `client_service_id_ibfk_1` FOREIGN KEY (`client_service_id`) REFERENCES `client_service_schedule` (`service_schedule_id`)
+);
+
+-- remember that project must be scheduled a little bit different from rutine schedule
 CREATE TABLE `projects` (
   `project_id` INT AUTO_INCREMENT NOT NULL,
   `name` VARCHAR(100) NOT NULL,
@@ -226,25 +245,6 @@ CREATE TABLE `project_services` (
   CONSTRAINT `project_id_ibfk_2` FOREIGN KEY (`project_id`) REFERENCES `projects` (`project_id`) 
 ); 
 
-CREATE TABLE `employees_at_service`(
-  `client_serviced_id` INT NOT NULL,
-  `employee_id` INT NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT `client_serviced_id_ibfk_1` FOREIGN KEY (`client_serviced_id`) REFERENCES `client_service_schedule` (`service_schedule_id`),
-  CONSTRAINT `employee_id_ibfk_2` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`employee_id`)
-);
-
-CREATE TABLE `client_service_materials`(
-  `client_service_id` INT NOT NULL,
-  `material_id` INT NOT NULL,
-  `qty` INT NOT NULL,
-  `sub_total` decimal(10,2) NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT `client_service_id_ibfk_1` FOREIGN KEY (`client_service_id`) REFERENCES `client_service_schedule` (`service_schedule_id`)
-);
-
 CREATE TABLE `service_receipts`(
   `receipt_id` INT NOT NULL,
   `bucket_file_name` VARCHAR(255),
@@ -252,6 +252,16 @@ CREATE TABLE `service_receipts`(
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT `client_service_id_ibfk_1` FOREIGN KEY (`client_service_id`) REFERENCES `client_service_schedule` (`service_schedule_id`)
+);
+
+-- Time Tracking Employee
+CREATE TABLE `employee_time_tracking` (
+  `employee_id` INT NOT NULL,
+  `total_minutes` INT NOT NULL,
+  `lunch_minutes` INT NOT NULL,
+  `day` date NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- app settings table
