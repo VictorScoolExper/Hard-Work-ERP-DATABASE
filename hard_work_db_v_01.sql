@@ -220,6 +220,8 @@ CREATE TABLE `client_service_materials`(
   CONSTRAINT `client_service_id_ibfk_1` FOREIGN KEY (`client_service_id`) REFERENCES `client_service_schedule` (`service_schedule_id`)
 );
 
+-- TODO: add a location registery when the leader registered job finished 
+
 -- remember that project must be scheduled a little bit different from rutine schedule
 CREATE TABLE `projects` (
   `project_id` INT AUTO_INCREMENT NOT NULL,
