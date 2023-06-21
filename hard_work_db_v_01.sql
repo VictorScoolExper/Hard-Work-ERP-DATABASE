@@ -210,7 +210,7 @@ CREATE TABLE `employees_at_service`(
   CONSTRAINT `employee_id_ibfk_2` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`employee_id`)
 );
 
-CREATE TABLE `client_service_materials`(
+CREATE TABLE `service_materials`(
   `client_service_id` INT NOT NULL,
   `material_id` INT NOT NULL,
   `qty` INT NOT NULL,
