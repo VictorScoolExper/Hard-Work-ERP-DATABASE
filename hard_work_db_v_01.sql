@@ -185,7 +185,7 @@ CREATE TABLE `materials` (
 ); 
 
 -- This is used for associating multiple services with a project 
-CREATE TABLE `client_service_schedule`(
+CREATE TABLE `service_schedule`(
   `service_schedule_id` INT AUTO_INCREMENT NOT NULL,
   `client_id` INT NOT NULL,
   `service_id` INT NOT NULL,
@@ -206,7 +206,7 @@ CREATE TABLE `employees_at_service`(
   `employee_id` INT NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT `client_serviced_id_ibfk_1` FOREIGN KEY (`client_serviced_id`) REFERENCES `client_service_schedule` (`service_schedule_id`),
+  CONSTRAINT `client_serviced_id_ibfk_1` FOREIGN KEY (`client_serviced_id`) REFERENCES `service_schedule` (`service_schedule_id`),
   CONSTRAINT `employee_id_ibfk_2` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`employee_id`)
 );
 
@@ -217,7 +217,7 @@ CREATE TABLE `client_service_materials`(
   `sub_total` decimal(10,2) NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT `client_service_id_ibfk_1` FOREIGN KEY (`client_service_id`) REFERENCES `client_service_schedule` (`service_schedule_id`)
+  CONSTRAINT `client_service_id_ibfk_1` FOREIGN KEY (`client_service_id`) REFERENCES `service_schedule` (`service_schedule_id`)
 );
 
 -- TODO: add a location registery when the leader registered job finished 
@@ -253,7 +253,7 @@ CREATE TABLE `service_receipts`(
   `client_service_id` INT NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT `client_service_id_ibfk_1` FOREIGN KEY (`client_service_id`) REFERENCES `client_service_schedule` (`service_schedule_id`)
+  CONSTRAINT `client_service_id_ibfk_1` FOREIGN KEY (`client_service_id`) REFERENCES `service_schedule` (`service_schedule_id`)
 );
 
 -- Time Tracking Employee
