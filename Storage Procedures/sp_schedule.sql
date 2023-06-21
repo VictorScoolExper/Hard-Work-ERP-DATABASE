@@ -10,6 +10,24 @@ CREATE PROCEDURE sp_create_service_schedule (
 )
 BEGIN
     START TRANSACTION;
+        -- TODO: insert into service schedule
+
+        IF JSON_LENGTH(p_services) > 0 THEN
+            -- TODO: INSERT STATEMENT
+        ELSE 
+            SIGNAL SQLSTATE  '45000' SET MESSAGE_TEXT = 'No services provided'
+        END IF;
+
+        IF JSON_LENGTH(p_materials) > 0 THEN
+            -- TODO: INSERT STATEMENT
+        ELSE 
+            SIGNAL SQLSTATE  '45000' SET MESSAGE_TEXT = 'No materials provided'
+        END IF;
+
+        IF JSON_LENGTH(p_employees) > 0 THEN
+            -- TODO: INSERT STATEMENT
+        END IF;
+
 
     COMMIT;
 END
