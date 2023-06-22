@@ -10,7 +10,7 @@ CREATE PROCEDURE SP_CREATE_SERVICE_SCHEDULE(
     IN p_services JSON, 
     IN p_materials JSON, 
     IN p_employees JSON, 
-   
+    IN p_days_until_repeat INT
 ) BEGIN 
     DECLARE currentIndex INT DEFAULT 0;
     DECLARE totalElements INT;
@@ -132,6 +132,21 @@ CREATE PROCEDURE SP_CREATE_SERVICE_SCHEDULE(
                 SET currentIndex = currentIndex + 1;
             END WHILE;
         END IF;
+
+        IF p_type = 'routine' THEN
+            INSERT INTO routine_scheduled_services(
+                service_schedule_id, 
+                days_until_repeat, 
+                last_service_date, 
+                status
+            ) VALUES (
+                last_id,
+                p_days_until_repeat,
+                null,
+                'active'
+            )
+        END IF 
+
 
 	COMMIT;
 	END 
