@@ -201,6 +201,14 @@ CREATE TABLE `service_schedule`(
   CONSTRAINT `address_id_ibfk_3` FOREIGN KEY (`address_id`) REFERENCES `addresses` (`address_id`)
 );  
 
+CREATE TABLE `scheduled_services`(
+  `client_schedule_id` INT NOT NULL,
+  `service_id` INT NOT NULL,
+  `quantity` INT NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
 CREATE TABLE `employees_at_service`(
   `client_serviced_id` INT NOT NULL,
   `employee_id` INT NOT NULL,
