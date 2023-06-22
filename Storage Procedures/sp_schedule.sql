@@ -1,5 +1,4 @@
 DROP PROCEDURE IF EXISTS sp_create_service_schedule;
-
 CREATE PROCEDURE SP_CREATE_SERVICE_SCHEDULE(
     IN p_client_id INT, 
     IN p_address_id INT, 
@@ -49,13 +48,11 @@ CREATE PROCEDURE SP_CREATE_SERVICE_SCHEDULE(
                 SET currentElement = JSON_EXTRACT(p_services, CONCAT('$[', currentIndex, ']'));
 
                 -- Process current json
-                DECLARE p_service_schedule_id INT;
                 DECLARE p_service_id INT;
                 DECLARE p_quantity INT;
 
-                SET p_service_schedule_id = JSON_UNQUOTE(JSON_EXTRACT(currentElement, '$.client_schedule_id'));
-                SET p_service_id = JSON_UNQUOTE(JSON_EXTRACT(currentElement, '$.service_id'));
-                SET p_quantity = JSON_UNQUOTE(JSON_EXTRACT(currentElement, '.$quantity'));
+                SET p_service_id = JSON_EXTRACT(currentElement, '$.service_id');
+                SET p_quantity = JSON_EXTRACT(currentElement, '.$quantity');
 
                 -- INSERT STATEMENT
                 INSERT INTO scheduled_services (
@@ -64,7 +61,7 @@ CREATE PROCEDURE SP_CREATE_SERVICE_SCHEDULE(
                     quantity
                 ) 
                 VALUES (
-                    p_service_schedule_id,
+                    last_id,
                     p_service_id,
                     p_quantity
                 );
@@ -87,16 +84,53 @@ CREATE PROCEDURE SP_CREATE_SERVICE_SCHEDULE(
                 SET currentElement = JSON_EXTRACT(jsonArray, CONCAT('$[', currentIndex, ']'));
                 
                 -- Process current json
-                DECLARE p_client_service_ide
-                -- TODO: INSERT STATEMENT
-                
+                DECLARE p_material_id INT;
+                DECLARE p_qty INT;
+                DECLARE p_sub_total decimal(10,2);
+
+                SET p_material_id = JSON_EXTRACT(currentElement, '$.material_id');
+                SET p_qty = JSON_EXTRACT(currentElement, '$.qty');
+                SET p_sub_total = JSON_EXTRACT(currentElement, '$.sub_total');
+
+                -- INSERT STATEMENT
+                INSERT INTO scheduled_service_materials(
+                    scheduled_service_id,
+                    material_id,
+                    qty,
+                    subtotal
+                ) 
+                VALUES (
+                    last_id,
+                    p_material_id,
+                    p_qty,
+                    p_sub_total
+                )
+
                 SET currentIndex = currentIndex + 1;
             END WHILE;
         END IF;
 
+        SET currentIndex = 0;
+        SET totalElements = JSON_LENGTH(p_employees)
         -- validate if employees exist
         IF JSON_LENGTH(p_employees) > 0 THEN 
-            -- TODO: INSERT STATEMENT
+            WHILE currentIndex < totalElements DO
+                SET currentElement = JSON_EXTRACT(p_employees, CONCAT('$[', currentIndex, ']'));
+
+                -- Process the current JSON element
+                DECLARE p_employee_id INT;
+                SET p_employee_id = JSON_EXTRACT(currentElement, '$.employee_id');
+                -- TODO: INSERT STATEMENT
+                INSERT INTO employees_at_service(
+                    client_serviced_id, 
+                    employee_id
+                ) 
+                VALUES (
+                    last_id,
+                    p_employee_id
+                )
+                SET currentIndex = currentIndex + 1;
+            END WHILE;
         END IF;
 
 	COMMIT;
