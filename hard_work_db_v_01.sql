@@ -218,14 +218,14 @@ CREATE TABLE `employees_at_service`(
   CONSTRAINT `employee_id_ibfk_2` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`employee_id`)
 );
 
-CREATE TABLE `service_materials`(
-  `client_service_id` INT NOT NULL,
+CREATE TABLE `scheduled_service_materials`(
+  `scheduled_service_id` INT NOT NULL,
   `material_id` INT NOT NULL,
   `qty` INT NOT NULL,
   `sub_total` decimal(10,2) NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT `client_service_id_ibfk_1` FOREIGN KEY (`client_service_id`) REFERENCES `service_schedule` (`service_schedule_id`)
+  CONSTRAINT `scheduled_service_id_ibfk_1` FOREIGN KEY (`scheduled_service_id`) REFERENCES `service_schedule` (`service_schedule_id`)
 );
 
 -- TODO: add a location registery when the leader registered job finished 
@@ -258,10 +258,10 @@ CREATE TABLE `project_services` (
 CREATE TABLE `service_receipts`(
   `receipt_id` INT NOT NULL,
   `bucket_file_name` VARCHAR(255),
-  `client_service_id` INT NOT NULL,
+  `scheduled_service_id` INT NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT `client_service_id_ibfk_1` FOREIGN KEY (`client_service_id`) REFERENCES `service_schedule` (`service_schedule_id`)
+  CONSTRAINT `scheduled_service_id_ibfk_1` FOREIGN KEY (`scheduled_service_id`) REFERENCES `service_schedule` (`service_schedule_id`)
 );
 
 -- Time Tracking Employee
