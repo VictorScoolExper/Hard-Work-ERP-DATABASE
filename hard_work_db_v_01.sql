@@ -206,6 +206,7 @@ CREATE TABLE `routine_scheduled_services`(
   `service_schedule_id` INT UNIQUE NOT NULL,
   `days_until_repeat` INT NOT NULL,
   `last_service_date` date NOT NULL,
+  `status` enum('active', 'disactived', 'canceled') NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT `service_schedule_id_ibfk_1` FOREIGN KEY (`service_schedule_id`) REFERENCES `service_schedule` (`service_schedule_id`)
