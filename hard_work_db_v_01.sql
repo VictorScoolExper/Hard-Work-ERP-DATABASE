@@ -196,49 +196,66 @@ CREATE TABLE `service_schedule`(
   `status` enum('pending', 'in-progress', 'done', 'canceled') NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`service_schedule_id`),
+  KEY `client_id`(`client_id`),
+  KEY `address_id`(`address_id`),
   CONSTRAINT `client_id_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `clients` (`client_id`),
-  CONSTRAINT `service_id_ibfk_2` FOREIGN KEY (`service_id`) REFERENCES `services` (`service_id`),
-  CONSTRAINT `address_id_ibfk_3` FOREIGN KEY (`address_id`) REFERENCES `addresses` (`address_id`)
+  CONSTRAINT `address_id_ibfk_2` FOREIGN KEY (`address_id`) REFERENCES `addresses` (`address_id`)
 );  
 
 CREATE TABLE `routine_scheduled_services`(
   `routine_schedule_id` INT AUTO_INCREMENT NOT NULL,
   `service_schedule_id` INT UNIQUE NOT NULL,
   `days_until_repeat` INT NOT NULL,
-  `last_service_date` date NOT NULL,
+  `last_service_date` date,
   `status` enum('active', 'disactived', 'canceled') NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`routine_schedule_id`),
+  KEY `service_schedule_id`(`service_schedule_id`),
   CONSTRAINT `service_schedule_id_ibfk_1` FOREIGN KEY (`service_schedule_id`) REFERENCES `service_schedule` (`service_schedule_id`)
-)
+);
 
 CREATE TABLE `scheduled_services`(
+  `scheduled_service_id` INT AUTO_INCREMENT NOT NULL,
   `service_schedule_id` INT NOT NULL,
   `service_id` INT NOT NULL,
   `quantity` INT NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`scheduled_service_id`),
+  KEY `service_schedule_id`(`service_schedule_id`),
+  KEY `service_id`(`service_id`),
   CONSTRAINT `service_schedule_id_ibfk_1` FOREIGN KEY (`service_schedule_id`) REFERENCES `service_schedule` (`service_schedule_id`),
-  CONSTRAINT `service_id_ibfk_1` FOREIGN KEY (`service_id`) REFERENCES `services` (`service_id`)
+  CONSTRAINT `service_id_ibfk_2` FOREIGN KEY (`service_id`) REFERENCES `services` (`service_id`)
 );
 
 CREATE TABLE `employees_at_service`(
+  `employee_service_id` INT AUTO_INCREMENT NOT NULL,
   `service_schedule_id` INT NOT NULL,
   `employee_id` INT NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`employee_service_id`),
+  KEY `service_schedule_id`(`service_schedule_id`),
+  KEY `employee_id`(`employee_id`),
   CONSTRAINT `service_schedule_id_ibfk_1` FOREIGN KEY (`service_schedule_id`) REFERENCES `service_schedule` (`service_schedule_id`),
   CONSTRAINT `employee_id_ibfk_2` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`employee_id`)
 );
 
 CREATE TABLE `scheduled_service_materials`(
+  `scheduled_service_material_id` INT AUTO_INCREMENT NOT NULL,
   `scheduled_service_id` INT NOT NULL,
   `material_id` INT NOT NULL,
   `qty` INT NOT NULL,
   `sub_total` decimal(10,2) NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT `scheduled_service_id_ibfk_1` FOREIGN KEY (`scheduled_service_id`) REFERENCES `service_schedule` (`service_schedule_id`)
+  PRIMARY KEY (`scheduled_service_material_id`),
+  KEY `scheduled_service_id`(`scheduled_service_id`),
+  KEY `material_id`(`material_id`),
+  CONSTRAINT `scheduled_service_id_ibfk_1` FOREIGN KEY (`scheduled_service_id`) REFERENCES `service_schedule` (`service_schedule_id`),
+  CONSTRAINT `material_id_ibfk_1` FOREIGN KEY (`material_id`) REFERENCES `materials` (`material_id`)
 );
 
 -- TODO: add a location registery when the leader registered job finished 
