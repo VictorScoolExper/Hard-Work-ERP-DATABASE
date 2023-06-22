@@ -188,12 +188,12 @@ CREATE TABLE `materials` (
 CREATE TABLE `service_schedule`(
   `service_schedule_id` INT AUTO_INCREMENT NOT NULL,
   `client_id` INT NOT NULL,
-  `service_id` INT NOT NULL,
   `address_id` INT NOT NULL,
   `start_time` TIME NOT NULL,
+  `end_time` date NOT NULL,
   `to_do_date` date NOT NULL,
-  `type` enum('project', 'service') NOT NULL,
-  `is_finished` enum('pending', 'in-progress', 'done', 'canceled') NOT NULL,
+  `type` enum('single', 'routine') NOT NULL,
+  `status` enum('pending', 'in-progress', 'done', 'canceled') NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT `client_id_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `clients` (`client_id`),
@@ -201,20 +201,32 @@ CREATE TABLE `service_schedule`(
   CONSTRAINT `address_id_ibfk_3` FOREIGN KEY (`address_id`) REFERENCES `addresses` (`address_id`)
 );  
 
+CREATE TABLE `routine_scheduled_services`(
+  `routine_schedule_id` INT AUTO_INCREMENT NOT NULL,
+  `service_schedule_id` INT UNIQUE NOT NULL,
+  `days_until_repeat` INT NOT NULL,
+  `last_service_date` date NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT `service_schedule_id_ibfk_1` FOREIGN KEY (`service_schedule_id`) REFERENCES `service_schedule` (`service_schedule_id`)
+)
+
 CREATE TABLE `scheduled_services`(
-  `client_schedule_id` INT NOT NULL,
+  `service_schedule_id` INT NOT NULL,
   `service_id` INT NOT NULL,
   `quantity` INT NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT `service_schedule_id_ibfk_1` FOREIGN KEY (`service_schedule_id`) REFERENCES `service_schedule` (`service_schedule_id`),
+  CONSTRAINT `service_id_ibfk_1` FOREIGN KEY (`service_id`) REFERENCES `services` (`service_id`)
 );
 
 CREATE TABLE `employees_at_service`(
-  `client_serviced_id` INT NOT NULL,
+  `service_schedule_id` INT NOT NULL,
   `employee_id` INT NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT `client_serviced_id_ibfk_1` FOREIGN KEY (`client_serviced_id`) REFERENCES `service_schedule` (`service_schedule_id`),
+  CONSTRAINT `service_schedule_id_ibfk_1` FOREIGN KEY (`service_schedule_id`) REFERENCES `service_schedule` (`service_schedule_id`),
   CONSTRAINT `employee_id_ibfk_2` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`employee_id`)
 );
 
