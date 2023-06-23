@@ -2,8 +2,8 @@ DROP PROCEDURE IF EXISTS sp_create_service_schedule;
 CREATE PROCEDURE sp_create_service_schedule(
     IN p_client_id BIGINT, 
     IN p_address_id BIGINT, 
-    IN p_start_time DATE, 
-    IN p_end_time DATE,
+    IN p_start_time TIME, 
+    IN p_end_time TIME,
     IN p_to_do_date DATE,
     IN p_type ENUM('single', 'routine'),
     IN p_status ENUM('pending', 'in-progress', 'done', 'canceled'),
