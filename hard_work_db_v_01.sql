@@ -208,7 +208,7 @@ CREATE TABLE
         `client_id` bigint NOT NULL,
         `address_id` bigint NOT NULL,
         `start_time` TIME NOT NULL,
-        `end_time` date NOT NULL,
+        `end_time` TIME NOT NULL,
         `to_do_date` date NOT NULL,
         `type` enum('single', 'routine') NOT NULL,
         `status` enum(
@@ -276,7 +276,7 @@ CREATE TABLE
 CREATE TABLE
     `scheduled_service_materials`(
         `scheduled_service_material_id` bigint AUTO_INCREMENT NOT NULL,
-        `scheduled_service_id` bigint NOT NULL,
+        `service_schedule_id` bigint NOT NULL,
         `material_id` bigint NOT NULL,
         `qty` INT NOT NULL,
         `sub_total` decimal(10, 2) NOT NULL,
@@ -285,9 +285,9 @@ CREATE TABLE
         PRIMARY KEY (
             `scheduled_service_material_id`
         ),
-        KEY `scheduled_service_id` (`scheduled_service_id`),
+        KEY `service_schedule_id` (`service_schedule_id`),
         KEY `material_id` (`material_id`),
-        CONSTRAINT `scheduled_service_materials_ibfk_1` FOREIGN KEY (`scheduled_service_id`) REFERENCES `service_schedule` (`service_schedule_id`),
+        CONSTRAINT `scheduled_service_materials_ibfk_1` FOREIGN KEY (`service_schedule_id`) REFERENCES `service_schedule` (`service_schedule_id`),
         CONSTRAINT `scheduled_service_materials_ibfk_2` FOREIGN KEY (`material_id`) REFERENCES `materials` (`material_id`)
     );
 
@@ -334,10 +334,10 @@ CREATE TABLE
     `service_receipts`(
         `receipt_id` bigint NOT NULL,
         `bucket_file_name` VARCHAR(255),
-        `scheduled_service_id` bigint NOT NULL,
+        `service_schedule_id` bigint NOT NULL,
         `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
         `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        CONSTRAINT `service_receipts_ibfk_1` FOREIGN KEY (`scheduled_service_id`) REFERENCES `service_schedule` (`service_schedule_id`)
+        CONSTRAINT `service_receipts_ibfk_1` FOREIGN KEY (`service_schedule_id`) REFERENCES `service_schedule` (`service_schedule_id`)
     );
 
 -- Time Tracking Employee
