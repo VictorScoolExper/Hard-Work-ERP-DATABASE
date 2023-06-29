@@ -1,5 +1,4 @@
 -- Updates for table service schedule
-
 CREATE PROCEDURE sp_update_client_id_service_schedule(
    IN p_service_schedule_id BIGINT, 
    IN p_client_id BIGINT
@@ -176,6 +175,35 @@ BEGIN
 END;
 
 -- ##################################################################################
+-- ######################### update materials service scheduled ##################
+-- ##################################################################################
+
+CREATE PROCEDURE sp_update_service_material_scheduled(
+   IN p_scheduled_service_material_id BIGINT, 
+   IN p_material_id BIGINT,
+   IN p_qty INT,
+   IN p_sub_total decimal(10, 2)
+)
+BEGIN 
+    
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING, NOT FOUND
+    BEGIN
+        ROLLBACK;
+        SIGNAL SQLSTATE '45000'
+        SET
+        MESSAGE_TEXT = 'An error occurred during routine schedule services update.';
+    END;
+    
+    START TRANSACTION;
+    
+    UPDATE scheduled_service_materials
+	SET material_id = p_material_id, qty = p_qty, sub_total = p_sub_total
+	WHERE scheduled_service_material_id = p_scheduled_service_material_id;
+    
+    COMMIT;
+END;
+
+-- ##################################################################################
 -- ######################### update employees at service scheduled ##################
 -- ##################################################################################
 
@@ -248,6 +276,30 @@ BEGIN
     
     UPDATE routine_scheduled_services
 	SET status = p_status
+	WHERE routine_schedule_id = p_routine_schedule_id;
+    
+    COMMIT;
+END;
+
+-- Needs to be tested
+CREATE PROCEDURE sp_update_last_service_routine_scheduled_services(
+   IN p_routine_schedule_id BIGINT, 
+   IN p_last_service_date date
+)
+BEGIN 
+    
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING, NOT FOUND
+    BEGIN
+        ROLLBACK;
+        SIGNAL SQLSTATE '45000'
+        SET
+        MESSAGE_TEXT = 'An error occurred during routine schedule services update.';
+    END;
+    
+    START TRANSACTION;
+    
+    UPDATE routine_scheduled_services
+	SET last_service_date = p_last_service_date
 	WHERE routine_schedule_id = p_routine_schedule_id;
     
     COMMIT;
