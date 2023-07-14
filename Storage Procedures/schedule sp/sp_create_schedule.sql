@@ -7,7 +7,6 @@ CREATE PROCEDURE sp_create_service_schedule(
     IN p_end_time TIME,
     IN p_to_do_date DATE,
     IN p_type ENUM('single', 'routine'),
-    IN p_status ENUM('pending', 'in-progress', 'done', 'canceled'),
     IN p_services JSON, 
     IN p_materials JSON, 
     IN p_employees JSON, 
@@ -52,7 +51,7 @@ BEGIN
         p_end_time, 
         p_to_do_date,
         p_type,
-        p_status
+        'pending'
     );
     
     -- Get the last inserted id

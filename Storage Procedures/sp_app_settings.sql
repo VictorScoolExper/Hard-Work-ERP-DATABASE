@@ -17,6 +17,7 @@ BEGIN
     COMMIT;
 END;
 
+-- TODO: add insert to manage shop operating hours
 CREATE PROCEDURE `sp_update_app_setting`(
     IN p_setting_name VARCHAR(100),
     IN p_setting_value VARCHAR(100),
