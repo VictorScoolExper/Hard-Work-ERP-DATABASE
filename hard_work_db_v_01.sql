@@ -278,8 +278,8 @@ CREATE TABLE
         `scheduled_service_material_id` bigint AUTO_INCREMENT NOT NULL,
         `service_schedule_id` bigint NOT NULL,
         `material_id` bigint NOT NULL,
-        `qty` INT NOT NULL,
-        `sub_total` decimal(10, 2) NOT NULL,
+        `quantity` INT NOT NULL,
+        `subtotal` decimal(10, 2) NOT NULL,
         `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
         `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         PRIMARY KEY (
