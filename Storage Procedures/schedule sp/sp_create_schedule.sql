@@ -1,5 +1,5 @@
 -- Creation of sp create service without service must include validation
-DROP PROCEDURE IF EXISTS sp_create_service_schedule;
+P PROCEDURE IF EXISTS sp_create_service_schedule;
 CREATE PROCEDURE sp_create_service_schedule(
     IN p_client_id BIGINT, 
     IN p_address_id BIGINT, 
@@ -20,8 +20,7 @@ BEGIN
     DECLARE p_service_id BIGINT;
     DECLARE p_quantity INT;
     DECLARE p_material_id BIGINT;
-    DECLARE p_qty INT;
-    DECLARE p_sub_total DECIMAL(10,2);
+    DECLARE p_subtotal DECIMAL(10,2);
     DECLARE p_employee_id INT;
     
     DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING, NOT FOUND
@@ -82,6 +81,11 @@ BEGIN
             
             SET currentIndex = currentIndex + 1;
         END WHILE;
+    ELSE 
+        ROLLBACK;
+        SIGNAL SQLSTATE '45000'
+        SET
+        MESSAGE_TEXT = 'No services provided';
     END IF;
     
     -- Insert materials
@@ -93,21 +97,21 @@ BEGIN
             
             -- Process current JSON
             SET p_material_id = JSON_EXTRACT(currentElement, '$.material_id');
-            SET p_qty = JSON_EXTRACT(currentElement, '$.qty');
-            SET p_sub_total = JSON_EXTRACT(currentElement, '$.sub_total');
+            SET p_quantity = JSON_EXTRACT(currentElement, '$.quantity');
+            SET p_subtotal = JSON_EXTRACT(currentElement, '$.subtotal');
             
             -- Insert statement
             INSERT INTO scheduled_service_materials (
                 service_schedule_id,
                 material_id,
-                qty,
-                sub_total
+                quantity,
+                subtotal
             ) 
             VALUES (
                 last_id, 
                 p_material_id,
-                p_qty,
-                p_sub_total
+                p_quantity,
+                p_subtotal
             );
             
             SET currentIndex = currentIndex + 1;
@@ -157,19 +161,20 @@ BEGIN
     COMMIT;
 END;
 
+
 CALL sp_create_service_schedule(
     6, -- p_client_id
     7, -- p_address_id
-    '12:30', -- p_start_time
-    '2:30', -- p_end_time
+    '12:30:00', -- p_start_time (added ':00' for seconds with leading zeros)
+    '02:30:00', -- p_end_time (added ':00' for seconds with leading zeros)
     '2023-06-20', -- p_to_do_date
     'routine', -- p_type
-    'pending', -- p_status
-    '[{"service_id": 3, "quantity": 2}, {"service_id": 2, "quantity": 3}]', -- p_services
-    '[{"material_id": 1, "qty": 4, "sub_total": 50.00}, {"material_id": 2, "qty": 2, "sub_total": 30.00}]', -- p_materials
+    '[{"service_id": 3, "quantity": 2}]', -- p_services
+    '[{"material_id": 1, "quantity": 4, "subtotal": 50.00}, {"material_id": 2, "quantity": 2, "subtotal": 30.00}]', -- p_materials
     '[{"employee_id": 11}, {"employee_id": 16}]', -- p_employees
     7 -- p_days_until_repeat
 );
+
 
 ###################################################################################################################################
 -- Creation of sp create service WITH service must include validation
