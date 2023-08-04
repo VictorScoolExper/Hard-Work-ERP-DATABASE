@@ -1,14 +1,16 @@
--- Creation of sp create service without service must include validation
-DROP PROCEDURE IF EXISTS sp_create_service_schedule;
-CREATE PROCEDURE sp_create_service_schedule(
+DROP PROCEDURE IF EXISTS sp_create_routine_service_schedule;
+CREATE PROCEDURE sp_create_routine_service_schedule(
     IN p_client_id BIGINT, 
     IN p_address_id BIGINT, 
     IN p_start_time TIME, 
     IN p_end_time TIME,
     IN p_to_do_date DATE,
+    IN p_type ENUM('single', 'routine'),
+    IN p_status ENUM('pending', 'in-progress', 'done', 'canceled'),
     IN p_services JSON, 
     IN p_materials JSON, 
-    IN p_employees JSON
+    IN p_employees JSON, 
+    IN p_days_until_repeat INT
 )
 BEGIN 
     DECLARE currentIndex INT DEFAULT 0;
@@ -18,7 +20,8 @@ BEGIN
     DECLARE p_service_id BIGINT;
     DECLARE p_quantity INT;
     DECLARE p_material_id BIGINT;
-    DECLARE p_subtotal DECIMAL(10,2);
+    DECLARE p_qty INT;
+    DECLARE p_sub_total DECIMAL(10,2);
     DECLARE p_employee_id INT;
     
     DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING, NOT FOUND
@@ -47,8 +50,8 @@ BEGIN
         p_start_time, 
         p_end_time, 
         p_to_do_date,
-        'single',
-        'pending'
+        p_type,
+        p_status
     );
     
     -- Get the last inserted id
@@ -95,21 +98,21 @@ BEGIN
             
             -- Process current JSON
             SET p_material_id = JSON_EXTRACT(currentElement, '$.material_id');
-            SET p_quantity = JSON_EXTRACT(currentElement, '$.quantity');
-            SET p_subtotal = JSON_EXTRACT(currentElement, '$.subtotal');
+            SET p_qty = JSON_EXTRACT(currentElement, '$.qty');
+            SET p_sub_total = JSON_EXTRACT(currentElement, '$.sub_total');
             
             -- Insert statement
             INSERT INTO scheduled_service_materials (
                 service_schedule_id,
                 material_id,
-                quantity,
-                subtotal
+                qty,
+                sub_total
             ) 
             VALUES (
                 last_id, 
                 p_material_id,
-                p_quantity,
-                p_subtotal
+                p_qty,
+                p_sub_total
             );
             
             SET currentIndex = currentIndex + 1;
@@ -139,20 +142,23 @@ BEGIN
             SET currentIndex = currentIndex + 1;
         END WHILE;
     END IF;
+    
+    -- Insert routine scheduled services if type is 'routine'
+    IF p_type = 'routine' THEN
+        INSERT INTO routine_scheduled_services (
+            service_schedule_id, 
+            days_until_repeat, 
+            last_service_date, 
+            status
+        ) 
+        VALUES (
+            last_id,
+            p_days_until_repeat,
+            NULL,
+            'active'
+        );
+    END IF;
+    
     COMMIT;
 END;
 
-
-CALL sp_create_service_schedule(
-    6, -- p_client_id
-    7, -- p_address_id
-    '12:30:00', -- p_start_time (added ':00' for seconds with leading zeros)
-    '02:30:00', -- p_end_time (added ':00' for seconds with leading zeros)
-    '2023-06-20', -- p_to_do_date
-    '[{"service_id": 3, "quantity": 2}]', -- p_services
-    '[{"material_id": 1, "quantity": 4, "subtotal": 50.00}, {"material_id": 2, "quantity": 2, "subtotal": 30.00}]', -- p_materials
-    '[{"employee_id": 11}, {"employee_id": 16}]' -- p_employees
-);
-
-
-###################################################################################################################################
