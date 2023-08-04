@@ -242,24 +242,6 @@ CREATE TABLE
     );
 
 CREATE TABLE
-    `routine_scheduled_services`(
-        `routine_schedule_id` bigint AUTO_INCREMENT NOT NULL,
-        `service_schedule_id` bigint NOT NULL,
-        `days_until_repeat` INT NOT NULL,
-        `last_service_date` date,
-        `status` enum(
-            'active',
-            'disactived',
-            'canceled'
-        ) NOT NULL,
-        `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-        `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        PRIMARY KEY (`routine_schedule_id`),
-        UNIQUE KEY `service_schedule_id` (`service_schedule_id`),
-        CONSTRAINT `routine_scheduled_services_ibfk_1` FOREIGN KEY (`service_schedule_id`) REFERENCES `service_schedule` (`service_schedule_id`)
-    );
-
-CREATE TABLE
     `employees_at_service_scheduled` (
         `emp_at_service_id` bigint NOT NULL AUTO_INCREMENT,
         `service_schedule_id` bigint NOT NULL,
@@ -289,6 +271,29 @@ CREATE TABLE
         KEY `material_id` (`material_id`),
         CONSTRAINT `scheduled_service_materials_ibfk_1` FOREIGN KEY (`service_schedule_id`) REFERENCES `service_schedule` (`service_schedule_id`),
         CONSTRAINT `scheduled_service_materials_ibfk_2` FOREIGN KEY (`material_id`) REFERENCES `materials` (`material_id`)
+    );
+
+-- Routine schedule tables
+CREATE TABLE `routine_schedules`(
+    `routine_schedule_id` bigint AUTO_INCREMENT NOT NULL,
+    `days_until_repeat` bigint NOT NULL,
+    `months_programmed` bigint NOT NULL,
+    `description` TEXT,
+    `title` varchar(50) NOT NULL,
+    `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`routine_schedule_id`)
+);
+
+CREATE TABLE
+    `routine_scheduled_services`(
+        `routine_schedule_id` bigint NOT NULL,
+        `service_schedule_id` bigint NOT NULL,
+        `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+        `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        UNIQUE KEY `service_schedule_id` (`service_schedule_id`),
+        CONSTRAINT `routine_scheduled_services_ibfk_1` FOREIGN KEY (`routine_schedule_id`) REFERENCES `routine_schedules` (`routine_schedule_id`),
+        CONSTRAINT `routine_scheduled_services_ibfk_2` FOREIGN KEY (`service_schedule_id`) REFERENCES `service_schedule` (`service_schedule_id`)
     );
 
 -- TODO: add a location registery when the leader registered job finished
