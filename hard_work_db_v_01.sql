@@ -2,19 +2,51 @@ CREATE DATABASE hard_work_erp_db;
 
 USE hard_work_erp_db;
 
+CREATE TABLE `company_roles` (
+  `role_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` text NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`role_id`),
+  UNIQUE KEY `name` (`name`)
+);
+
+CREATE TABLE `company_departments` (
+  `department_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` text NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`department_id`),
+  UNIQUE KEY `name` (`name`)
+);
+
+CREATE TABLE `job_titles` (
+  `job_title_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `description` text NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`job_title_id`),
+  UNIQUE KEY `name` (`name`)
+)
+
 CREATE TABLE
     `users` (
         `user_id` bigint NOT NULL AUTO_INCREMENT,
         `name` varchar(200) NOT NULL,
         `last_name` varchar(200) NOT NULL,
         `cell_number` varchar(20) DEFAULT NULL,
-        `role` varchar(20) DEFAULT NULL,
         `birth_date` date DEFAULT NULL,
         `active` enum('true', 'false') DEFAULT NULL,
         `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
         `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        PRIMARY KEY (`user_id`)
-    );
+        `role_id` int DEFAULT NULL,
+        PRIMARY KEY (`user_id`),
+        KEY `fk_users_company_roles` (`role_id`),
+        CONSTRAINT `fk_users_company_roles` FOREIGN KEY (`role_id`) REFERENCES `company_roles` (`role_id`)
+    )
 
 CREATE TABLE
     `auths` (
@@ -33,8 +65,6 @@ CREATE TABLE
         `user_id` bigint NOT NULL,
         `created_by` bigint DEFAULT NULL,
         `edited_by` bigint DEFAULT NULL,
-        `job_title` varchar(100) NOT NULL,
-        `department` varchar(100) NOT NULL,
         `driver_license` varchar(250) DEFAULT NULL,
         `start_date` date NOT NULL,
         `wage_per_hour` decimal(10, 2) NOT NULL,
@@ -42,11 +72,17 @@ CREATE TABLE
         `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         `image_name` varchar(255) DEFAULT NULL,
         `email` varchar(255) NOT NULL,
+        `job_title_id` int DEFAULT NULL,
+        `company_department_id` int DEFAULT NULL,
         PRIMARY KEY (`employee_id`),
         UNIQUE KEY `user_id` (`user_id`),
         KEY `created_by` (`created_by`),
         KEY `edited_by` (`edited_by`),
-        CONSTRAINT `employees_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
+        KEY `fk_employees_job_titles` (`job_title_id`),
+        KEY `fk_employees_company_department` (`company_department_id`),
+        CONSTRAINT `employees_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
+        CONSTRAINT `fk_employees_company_department` FOREIGN KEY (`company_department_id`) REFERENCES `company_departments` (`department_id`),
+        CONSTRAINT `fk_employees_job_titles` FOREIGN KEY (`job_title_id`) REFERENCES `job_titles` (`job_title_id`)
     );
 
 -- TODO: delete if neccesary
@@ -274,16 +310,18 @@ CREATE TABLE
     );
 
 -- Routine schedule tables
-CREATE TABLE `routine_schedules`(
-    `routine_schedule_id` bigint AUTO_INCREMENT NOT NULL,
-    `days_until_repeat` bigint NOT NULL,
-    `months_programmed` bigint NOT NULL,
-    `description` TEXT,
-    `title` varchar(50) NOT NULL,
-    `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`routine_schedule_id`)
-);
+
+CREATE TABLE
+    `routine_schedules`(
+        `routine_schedule_id` bigint AUTO_INCREMENT NOT NULL,
+        `days_until_repeat` bigint NOT NULL,
+        `months_programmed` bigint NOT NULL,
+        `description` TEXT,
+        `title` varchar(50) NOT NULL,
+        `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+        `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        PRIMARY KEY (`routine_schedule_id`)
+    );
 
 CREATE TABLE
     `routine_scheduled_services`(
