@@ -1,9 +1,10 @@
-
+-- Green Works ERP by Victor Martinez
 
 -- Get all Employees
+DROP PROCEDURE IF EXISTS sp_get_employee_list;
 CREATE PROCEDURE sp_get_employee_list()
 BEGIN
-    SELECT u.name, u.last_name, u.cell_number, u.role, u.birth_date, u.active, e.employee_id, e.user_id, e.job_title, e.department, e.driver_license, e.start_date, e.wage_per_hour, e.image_name, e.email
+    SELECT u.name, u.last_name, u.cell_number, u.role_id, u.birth_date, u.active, e.employee_id, e.user_id, e.job_title_id, e.company_department_id, e.driver_license, e.start_date, e.wage_per_hour, e.image_name, e.email
     FROM users u
     INNER JOIN employees e
     ON u.user_id = e.user_id;
@@ -57,7 +58,6 @@ CREATE PROCEDURE sp_update_employee_details(
     IN p_email VARCHAR(255)
 )
 BEGIN
-    
     -- Update user record
     UPDATE users
     SET name = p_name,

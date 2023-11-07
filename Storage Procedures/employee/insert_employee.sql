@@ -1,3 +1,5 @@
+-- Green Works ERP by Victor Martinez
+
 -- Create Employee 
 CREATE PROCEDURE `sp_insert_employee`(
     IN p_name VARCHAR(200),

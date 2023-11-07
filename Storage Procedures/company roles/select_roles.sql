@@ -1,5 +1,5 @@
 DROP PROCEDURE IF EXISTS sp_select_company_name;
-CREATE PROCEDURE sp_select_company_name(
+CREATE PROCEDURE sp_select_company_role_name(
     IN p_role_id int
 )
 BEGIN
