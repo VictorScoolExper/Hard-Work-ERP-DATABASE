@@ -34,13 +34,16 @@ END
 
 CALL sp_check_auth_empty('my_table', @is_empty);
 SELECT @is_empty AS is_empty;
-
-CREATE PROCEDURE sp_get_user_auth(IN email_in VARCHAR(200))
+-------------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS sp_get_user_auth;
+CREATE PROCEDURE sp_select_user_auth(IN email_in VARCHAR(200))
 BEGIN
-  SELECT users.user_id, auths.password, users.name, users.last_name, users.role 
+  SELECT users.user_id, auths.password, users.name, users.last_name, users.role_id
   FROM users 
   JOIN auths ON users.user_id = auths.user_id 
   WHERE auths.email = email_in;
-END 
+END;
 
 CALL sp_get_user_auth('example@example.com');
+
+-- -----------------------------------------------------------------------------------------------
